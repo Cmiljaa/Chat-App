@@ -48,3 +48,43 @@
 		</p>
 	</div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref as dbRef, set } from "firebase/database";
+
+const nickname = ref<string>('');
+const email = ref<string>('');
+const password = ref<string>('');
+const auth = getAuth();
+const router = useRouter();
+let authError = ref<string | null>(null);
+
+const registerUser = async () => {
+	try {
+		await createUserWithEmailAndPassword(auth, email.value, password.value);
+
+		await writeUserData(nickname.value, email.value);
+
+		await router.push('/messages');
+
+	} catch (error: any) {
+		switch (error.code) {
+			case 'auth/weak-password':
+				authError.value = 'Password should be at least 6 characters long.';
+				break;
+			case 'auth/email-already-in-use':
+				authError.value = 'This email is already registered. Please sign in or use another email.';
+				break;
+			case 'auth/invalid-email':
+				authError.value = 'Please enter a valid email address.';
+				break;
+			default:
+				authError.value = 'An unexpected error occurred. Please try again.';
+		}
+	}
+}
+
+</script>
