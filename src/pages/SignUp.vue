@@ -16,26 +16,37 @@
 					<label for="email" class="block mb-1 text-base text-black">
 						Email
 					</label>
-					<input type="email" id="email" name="email" placeholder=" " required v-model="email"
+					<input type="email" id="email" name="email" placeholder=" " required v-model="formData.email"
 						class="w-full px-4 py-2 text-black placeholder-transparent bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />
+					<p class="text-red-500" v-for="error in v$.$errors" :key="error.$uid">
+						{{ v$.email.$errors[0]?.$message }}
+					</p>
 				</div>
 
 				<div class="relative mt-6">
 					<label for="password" class="block mb-1 text-base text-black">
 						Password
 					</label>
-					<input type="password" id="password" name="password" placeholder=" " required v-model="password"
+					<input type="password" id="password" name="password" placeholder=" " required
+						v-model="formData.password"
 						class="w-full px-4 py-2 text-black placeholder-transparent bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />
+					<p class="text-red-500" v-for="error in v$.$errors" :key="error.$uid">
+						{{ v$.password.$errors[0]?.$message }}
+					</p>
 				</div>
 				<div class="relative mt-6">
 					<label for="repeat_password" class="block mb-1 text-base text-black">
 						Repeat Password
 					</label>
 					<input type="password" id="repeat_password" name="repeat_password" placeholder=" " required
+						v-model="formData.repeatPassword"
 						class="w-full px-4 py-2 text-black placeholder-transparent bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />
+					<p class="text-red-500" v-for="error in v$.$errors" :key="error.$uid">
+						{{ v$.repeatPassword.$errors[0]?.$message }}
+					</p>
 				</div>
 
-				<button type="submit"
+				<button type="submit" :disabled="loading"
 					class="w-full py-2 bg-blue-600 text-white text-lg font-semibold rounded-md hover:bg-blue-700 transition">
 					Submit
 				</button>
@@ -50,7 +61,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { registerNewUser } from '../firebase/SignUp';
@@ -82,6 +92,8 @@ const registerUser = async () => {
 
 		await writeUserData(nickname.value, email.value);
 
+		const user = await registerNewUser(formData.nickname, formData.email, formData.password);
+		console.log(user);
 		await router.push('/messages');
 
 	} catch (error: any) {
