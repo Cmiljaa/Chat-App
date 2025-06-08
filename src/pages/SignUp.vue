@@ -51,17 +51,31 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, ref as dbRef, set } from "firebase/database";
+import { registerNewUser } from '../firebase/SignUp';
+import useVuelidate from '@vuelidate/core';
+import { required, minLength, email, sameAs, helpers } from '@vuelidate/validators';
 
-const nickname = ref<string>('');
-const email = ref<string>('');
-const password = ref<string>('');
-const auth = getAuth();
+const loading = ref<boolean>(false);
 const router = useRouter();
 let authError = ref<string | null>(null);
 
+const formData = reactive({
+	nickname: '',
+	email: '',
+	password: '',
+	repeatPassword: ''
+});
+
+const rules = {
+	nickname: { required, minLength: minLength(5) },
+	email: { required, email },
+	password: { required, minLength: minLength(6) },
+	repeatPassword: { required, sameAsPassword: helpers.withMessage('Passwords do not match', sameAs(() => formData.password)) }
+}
+
+const v$ = useVuelidate(rules, formData);
 const registerUser = async () => {
 	try {
 		await createUserWithEmailAndPassword(auth, email.value, password.value);
