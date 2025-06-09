@@ -1,7 +1,7 @@
 <template>
 	<nav class="bg-gray-100 shadow-sm p-4">
 		<div class="flex justify-between items-center px-10">
-			<p class="text-xl font-medium">CHAT APP</p>
+			<RouterLink :to="{ name: 'Messages' }" class="text-xl font-medium">CHAT APP</RouterLink>
 
 			<button class="md:hidden text-blue-600 text-2xl px-2 py-1 rounded transition-all duration-200"
 				@click="isOpen = !isOpen">
