@@ -1,6 +1,6 @@
 <template>
-	<form action="" @submit.prevent="submitAuth" class="max-w-md mx-auto mt-20 p-6 bg-blue-50 rounded-lg shadow-md">
-		<h1 class="text-3xl font-medium text-black mb-8 text-center">Sign In</h1>
+	<form @submit.prevent="submitAuth" class="max-w-md mx-auto mt-14 p-6 bg-blue-50 rounded-lg shadow-md">
+		<h1 class="text-3xl font-medium text-black mb-8 text-center">{{ title }}</h1>
 
 		<div class="space-y-6">
 			<div class="space-y-6">
@@ -31,7 +31,8 @@ const props = defineProps<{
 	formData: Record<string, any>,
 	rules: Record<string, any>,
 	authFunction: (...args: any[]) => Promise<any>,
-	handleErrors: (error: any) => string
+	handleErrors: (error: any) => string,
+	title: string
 }>();
 
 const { rules, formData, authFunction, handleErrors } = props;
