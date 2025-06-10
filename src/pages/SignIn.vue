@@ -15,4 +15,36 @@
 
 <script setup lang="ts">
 
+import { reactive } from 'vue';
+import { signInUser } from '../firebase/SignIn';
+import { required, minLength, email } from '@vuelidate/validators';
+import BaseInput from '../components/BaseInput.vue';
+import AuthForm from '../components/AuthForm.vue';
+
+const formData = reactive({
+	email: '',
+	password: ''
+});
+
+const rules = {
+	email: { required, email },
+	password: { required, minLength: minLength(6) },
+}
+
+const handleErrors = (error: any) => {
+	switch (error.code) {
+		case 'auth/invalid-credential':
+		case 'auth/user-not-found':
+		case 'auth/wrong-password':
+			return 'Invalid email or password.';
+		case 'auth/user-disabled':
+			return 'This account has been disabled. Please contact support.';
+		case 'auth/user-not-found':
+			return 'No account found with this email.';
+		case 'auth/too-many-requests':
+			return 'Too many failed attempts. Please wait and try again later.';
+		default:
+			return 'An unexpected error occurred. Please try again.';
+	}
+}
 </script>
