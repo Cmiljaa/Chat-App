@@ -50,7 +50,7 @@ let authError = ref<string>('');
 
 const v$ = useVuelidate(rules, formData);
 
-const submitAuth = async () => {
+const submitAuth = async (): Promise<void> => {
 	v$.value.$touch();
 	const result = await v$.value.$validate();
 
