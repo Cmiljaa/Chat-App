@@ -31,7 +31,7 @@ const rules = {
 	password: { required, minLength: minLength(6) },
 }
 
-const handleErrors = (error: any) => {
+const handleErrors = (error: any): string => {
 	switch (error.code) {
 		case 'auth/invalid-credential':
 		case 'auth/user-not-found':

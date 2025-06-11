@@ -3,7 +3,7 @@ import { signInWithPopup, GoogleAuthProvider, getAuth } from "firebase/auth";
 
 const provider = new GoogleAuthProvider();
 
-export const googleAuth = async (router: Router) => {
+export const googleAuth = async (router: Router): Promise<void> => {
 	try {
 		const result = await signInWithPopup(getAuth(), provider)
 		GoogleAuthProvider.credentialFromResult(result);

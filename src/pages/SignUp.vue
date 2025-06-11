@@ -40,7 +40,7 @@ const rules = {
 	repeatPassword: { required, sameAsPassword: helpers.withMessage('Passwords do not match', sameAs(computed(() => formData.password))) }
 }
 
-const handleErrors = (error: any) => {
+const handleErrors = (error: any): string => {
 	switch (error.code) {
 		case 'auth/weak-password':
 			return 'Password should be at least 6 characters long.';
