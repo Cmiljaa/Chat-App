@@ -19,6 +19,12 @@
 						Sign Up
 					</RouterLink>
 				</li>
+				<li class="text-xl px-2 font-medium" v-if="isLoggedIn">
+					<button class="text-blue-600 hover:text-blue-800 font-large hover:cursor-pointer "
+						@click="handleSignOut">
+						Sign Out
+					</button>
+				</li>
 			</ul>
 		</div>
 
@@ -42,6 +48,32 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { onMounted } from 'vue';
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { useUserStore } from '../store/UserStore';
+import { useRouter } from 'vue-router';
+
+let isOpen = ref<boolean>(false);
+const isLoggedIn = ref<boolean>(false);
+const auth = getAuth();
+const userStore = useUserStore();
+const router = useRouter();
+
+const handleSignOut = async (): Promise<void> => {
+	await signOut(auth);
+	await router.push('/signIn');
+	userStore.removeUser();
+};
+
+onMounted((): void => {
+	onAuthStateChanged(auth, (user) => {
+		if (user) {
+			userStore.setUser(user);
+		}
+
+		isLoggedIn.value = !!user;
+	});
+});
 
 let isOpen = ref(false);
 </script>
