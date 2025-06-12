@@ -1,17 +1,17 @@
-import type { UserCredential } from "firebase/auth";
+import type { User } from "firebase/auth";
 import { defineStore } from "pinia";
 
 export const useUserStore = defineStore('userStore', {
 	state: () => ({
-		user: null as null | UserCredential
+		user: null as null | User
 	}),
 	getters: {
-		getUser(): UserCredential | null{
+		getUser(): User | null{
 			return this.user;
 		}
 	},
 	actions: ({
-		setUser(user: UserCredential){
+		setUser(user: User){
 			this.user = user;
 		},
 		removeUser(){
