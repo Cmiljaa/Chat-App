@@ -4,7 +4,7 @@
 			{{ label }}
 		</label>
 		<input :type="type" :id="id" :name="name" :value="modelValue" required @input="onInput"
-			class="w-full px-3 py-1.5 text-lg text-black placeholder-transparent bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />
+			class="w-full px-3 py-1.5 text-medium text-black placeholder-transparent bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />
 		<p class="text-red-500 text-base mt-1">
 			{{ error }}
 		</p>
@@ -12,8 +12,6 @@
 </template>
 
 <script setup lang="ts">
-
-import { defineProps, defineEmits } from 'vue';
 
 defineProps({
 	modelValue: String,
