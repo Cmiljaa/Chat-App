@@ -15,7 +15,7 @@ export const googleAuth = async (router: Router): Promise<void> => {
 			showToast('success', 'Signed In successfully!');
 		}
 		
-		await router.push('/messages');
+		await router.push({ name: 'Messages' });
 
 	} catch (error) {
 		showToast('error', 'Failed to sign in with Google');

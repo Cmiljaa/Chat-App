@@ -62,7 +62,7 @@ const submitAuth = async (): Promise<void> => {
 
 	try {
 		const user = await authFunction(...Object.values(formData));
-		await router.push('/messages');
+		await router.push({ name: 'Messages' });
 
 	} catch (error: any) {
 		authError.value = handleErrors(error.code);
