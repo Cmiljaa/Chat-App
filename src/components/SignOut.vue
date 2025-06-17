@@ -24,6 +24,7 @@ const handleSignOut = async (): Promise<void> => {
 	await signOut(auth);
 	await router.push('/signIn');
 	userStore.removeUser();
+	showToast('success', 'Signed out successfully!');
 };
 
 </script>
