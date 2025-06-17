@@ -44,8 +44,6 @@ const handleErrors = (error: any): string => {
 	switch (error.code) {
 		case 'auth/weak-password':
 			return 'Password should be at least 6 characters long.';
-		case 'auth/email-already-in-use':
-			return 'This email is already registered. Please sign in or use another email.';
 		case 'auth/invalid-email':
 			return 'Please enter a valid email address.'
 		default:

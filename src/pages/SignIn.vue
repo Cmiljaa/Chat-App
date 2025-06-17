@@ -14,7 +14,6 @@
 </template>
 
 <script setup lang="ts">
-
 import { reactive } from 'vue';
 import { signInUser } from '../firebase/SignIn';
 import { required, minLength, email } from '@vuelidate/validators';
@@ -31,16 +30,14 @@ const rules = {
 	password: { required, minLength: minLength(6) },
 }
 
-const handleErrors = (error: any): string => {
-	switch (error.code) {
+const handleErrors = (error: string): string => {
+	switch (error) {
 		case 'auth/invalid-credential':
 		case 'auth/user-not-found':
 		case 'auth/wrong-password':
 			return 'Invalid email or password.';
 		case 'auth/user-disabled':
 			return 'This account has been disabled. Please contact support.';
-		case 'auth/user-not-found':
-			return 'No account found with this email.';
 		case 'auth/too-many-requests':
 			return 'Too many failed attempts. Please wait and try again later.';
 		default:
