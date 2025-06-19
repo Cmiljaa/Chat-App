@@ -32,7 +32,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
-import { googleAuth } from '../firebase/GoogleAuth';
+import { googleAuth } from '../firebase/firebaseAuth';
 
 const props = defineProps<{
 	formData: Record<string, any>,

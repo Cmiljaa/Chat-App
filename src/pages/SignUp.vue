@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { computed, reactive } from 'vue';
-import { registerNewUser } from '../firebase/SignUp';
+import { registerNewUser } from '../firebase/firebaseAuth';
 import { required, minLength, email, sameAs, helpers } from '@vuelidate/validators';
 import AuthForm from '../components/AuthForm.vue';
 import BaseInput from '../components/BaseInput.vue';
