@@ -15,10 +15,13 @@ export const googleAuth = async (router: Router): Promise<void> => {
 		} else{
 			showToast('success', 'Signed In successfully!');
 		}
-		
+
+		await addUserToDb(result.user.displayName || 'Anonymous', result.user.email || 'test@example.com', result.user.uid);
+
 		await router.push({ name: 'Messages' });
 
 	} catch (error) {
+		console.log(error);
 		showToast('error', 'Failed to sign in with Google');
 	}
 }
@@ -32,14 +35,25 @@ export const signInUser = async (email: string, password: string): Promise<UserC
 export const registerNewUser = async (nickname: string, email: string, password: string): Promise<UserCredential> => {
 	const user = await createUserWithEmailAndPassword(getAuth(), email, password);
 		
-	const db = getDatabase();
-
-	await set(dbRef(db, 'users/' + user.user.uid), {
-		nickname,
-		email,
-	});
+	await addUserToDb(nickname, email, user.user.uid);
 
 	showToast('success', 'Your account was successfully created.');
 
 	return user;
+}
+
+export const addUserToDb = async (nickname: string, email: string, id: string): Promise<void> => {
+	const db = getDatabase();
+
+	try {
+		await set(dbRef(db, 'users/' + id), {
+			nickname,
+			email,
+			id,
+			created_at: Date.now()
+		});
+	} catch (error) {
+		console.error('Failed to add user to DB:', error);
+		showToast('error', 'Unexpected error');
+	}
 }
