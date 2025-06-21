@@ -1,13 +1,18 @@
 import { ref, get, getDatabase, child } from "firebase/database";
 
-export const getUsers = async () => {
+export const getUsers = async (exceptUserId?: string) => {
 	const db = getDatabase();
 	const usersRef = ref(db, 'users');
 	try {
 		const snapshot = await get(usersRef);
 		if (snapshot.exists()) {
-			const users = snapshot.val();
-			console.log(users);
+			let users = snapshot.val();
+
+			if(exceptUserId){
+				users = Object.fromEntries(
+				Object.entries(users).filter(([userId]) => userId !== exceptUserId));
+			}
+
 			return users;
 		} else {
 			console.log("No users found.");
@@ -18,17 +23,19 @@ export const getUsers = async () => {
 	}
 };
 
-export const getUser = async (userId: string) => {
+export const getUser = async (userId: string): Promise<null> => {
 	const db = getDatabase();
 	const userRef = ref(db);
 	try {
 		const snapshot = await get(child(userRef, `users/${userId}`));
 		if(snapshot.exists()){
-			console.log(snapshot.val());
+			return snapshot.val();
 		}else{
 			console.log('No data available');
+			return null;
 		}
 	} catch (error) {
 		console.log(error);
+		return null;
 	}
 }
