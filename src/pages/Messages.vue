@@ -12,14 +12,8 @@
 							@click="isModalOpen = true"></ion-icon>
 					</div>
 				</div>
-
-				<div class="flex-1 overflow-y-auto custom-scroll space-y-1">
-					<div v-for="otherUser in otherUsers" :key="otherUser.id"
-						class="text-white px-6 text- py-3 hover:bg-[#1f1f1f] transition-colors duration-150 cursor-pointer truncate">
-						{{ otherUser.nickname }}
-					</div>
-				</div>
 			</template>
+
 			<template v-else>
 				<Spinner wrapperClass="flex flex-1 justify-center items-center" />
 			</template>
@@ -37,20 +31,21 @@
 				</template>
 			</RouterView>
 		</div>
-		<button class="btn-open">
-			Open Modal
-		</button>
 
 		<Modal v-model:isOpen="isModalOpen">
 			<div class="flex items-center gap-2 w-full max-w-sm">
-				<input type="text" placeholder="Search..."
+				<input type="text" placeholder="Search..." v-model="nickname"
 					class="flex-grow px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1" />
 
-				<ion-icon name="search-outline" class="text-white text-2xl cursor-pointer transition duration-200"
-					1></ion-icon>
+				<ion-icon name="search-outline" @click="getSearch()"
+					class="text-white text-2xl cursor-pointer transition duration-200"></ion-icon>
 			</div>
-
-
+			<div class="flex-1 mt-2 overflow-y-auto custom-scroll space-y-1">
+				<div v-for="otherUser in otherUsers" :key="otherUser.id"
+					class="text-white px-6 rounded-lg py-3 hover:bg-[#000] transition-colors duration-150 cursor-pointer truncate">
+					{{ otherUser.nickname }}
+				</div>
+			</div>
 
 		</Modal>
 		<button></button>
@@ -61,23 +56,22 @@
 
 <script setup lang="ts">
 import { useUserStore } from '../store/UserStore';
-import { computed, ref, watch, type ComputedRef, type Ref } from 'vue';
-import { getUsers } from '../firebase/userService';
+import { computed, ref, type ComputedRef, type Ref } from 'vue';
+import { getUsersByNickname } from '../firebase/userService';
 import { type User } from '../interfaces/user';
 import Spinner from '../components/UI/Spinner.vue';
 import Modal from '../components/UI/Modal.vue';
 
 const userStore = useUserStore();
 const user: ComputedRef<User | null> = computed(() => userStore.user);
-let isLoading = ref<boolean>(true);
+let isLoading = ref<boolean>(false);
 let otherUsers: Ref<User[] | null> = ref(null);
 const isModalOpen = ref(false);
+const nickname = ref('');
 
-watch(user, async (loadedUser): Promise<void> => {
-	if (loadedUser?.id) {
-		otherUsers.value = await getUsers(loadedUser.id);
-		isLoading.value = false;
-	}
-}, { immediate: true });
+
+const getSearch = async () => {
+	otherUsers.value = await getUsersByNickname(nickname.value);
+}
 
 </script>
