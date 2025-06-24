@@ -1,4 +1,4 @@
-import { ref, get, getDatabase, child } from "firebase/database";
+import { ref, get, getDatabase, child, query, orderByChild, startAt, endAt, limitToFirst } from "firebase/database";
 
 export const getUsers = async (exceptUserId?: string) => {
 	const db = getDatabase();
@@ -39,3 +39,30 @@ export const getUser = async (userId: string): Promise<null> => {
 		return null;
 	}
 }
+
+export const getUsersByNickname = async (nickname: string) => {
+	const db = getDatabase();
+	const usersRef = ref(db, 'users');
+
+const userQuery = query(
+  	usersRef,
+  	orderByChild('nickname'),
+  	startAt(nickname),
+  	endAt(nickname + "\uf8ff"),
+  	limitToFirst(10)
+);
+
+try {
+	const snapshot = await get(userQuery);
+	 if (snapshot.exists()) {
+      console.log(snapshot.val());
+      return snapshot.val();
+    } else {
+      console.log("No users");
+      return null;
+    }
+} catch (error) {
+	console.error(error);
+}
+
+};
