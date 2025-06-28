@@ -41,7 +41,7 @@
 					class="text-white text-2xl cursor-pointer transition duration-200"></ion-icon>
 			</div>
 			<div class="flex-1 mt-2 overflow-y-auto custom-scroll space-y-1">
-				<div v-for="otherUser in otherUsers" :key="otherUser.id"
+				<div v-for="otherUser in otherUsers" :key="otherUser.id" @click="chat(otherUser.id)"
 					class="text-white px-6 rounded-lg py-3 hover:bg-[#000] transition-colors duration-150 cursor-pointer truncate">
 					{{ otherUser.nickname }}
 				</div>
@@ -61,6 +61,7 @@ import { getUsersByNickname } from '../firebase/userService';
 import { type User } from '../interfaces/user';
 import Spinner from '../components/UI/Spinner.vue';
 import Modal from '../components/UI/Modal.vue';
+import { createChat, findChatBetweenUsers } from '../firebase/chatService';
 
 const userStore = useUserStore();
 const user: ComputedRef<User | null> = computed(() => userStore.user);
@@ -72,6 +73,14 @@ const nickname = ref('');
 
 const getSearch = async () => {
 	otherUsers.value = await getUsersByNickname(nickname.value);
+}
+
+const chat = async (userIdB: string) => {
+	let result = await findChatBetweenUsers(user.value?.id ?? '0', userIdB);
+	if (!result) {
+		const chatId = await createChat(user.value?.id ?? '0', userIdB);
+		console.log(chatId);
+	}
 }
 
 </script>
