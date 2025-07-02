@@ -23,7 +23,7 @@
 						</li>
 					</template>
 					<li class="text-xl px-2 font-medium" v-else>
-						<SignOut customClass="text-blue-600 hover:text-blue-800 font-lg hover:cursor-pointer"></SignOut>
+						<SignOut customClass="text-blue-600 hover:text-blue-800 font-lg cursor-pointer"></SignOut>
 					</li>
 				</ul>
 			</div>
@@ -63,7 +63,7 @@ import { onMounted } from 'vue';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from '../store/UserStore';
 import SignOut from './SignOut.vue';
-import { getUser } from '../firebase/userService';
+import { getUser } from '../firebase/services/userService';
 import Spinner from './UI/Spinner.vue';
 
 let isOpen = ref<boolean>(false);
