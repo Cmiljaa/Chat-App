@@ -8,14 +8,10 @@
 						{{ user?.nickname || "User" }}
 					</p>
 					<div class="text-white text-4xl">
-						<ion-icon name="create-outline" class="hover:cursor-pointer"
-							@click="isModalOpen = true"></ion-icon>
+						<ion-icon name="create-outline" class="cursor-pointer" @click="isModalOpen = true"></ion-icon>
 					</div>
 				</div>
-				<p v-for="chat in chats" :key="chat.id"
-					class="text-white text-lg px-6 py-3 hover:bg-white/10 transition-colors duration-150 cursor-pointer truncate">
-					{{ getOtherMemberNickname(chat.members, user?.id || '') }}
-				</p>
+				<ChatList :chats="chats" :userId="user?.id || ''" />
 			</template>
 
 			<template v-else>
@@ -45,64 +41,68 @@
 					class="text-white text-2xl cursor-pointer transition duration-200"></ion-icon>
 			</div>
 			<div class="flex-1 mt-2 overflow-y-auto custom-scroll space-y-1">
-				<div v-for="otherUser in otherUsers" :key="otherUser.id" @click="chat(otherUser.id, otherUser.nickname)"
+				<div v-for="otherUser in otherUsers" :key="otherUser.id"
+					@click="loadChat(otherUser.id, otherUser.nickname)"
 					class="text-white px-6 rounded-lg py-3 hover:bg-[#000] transition-colors duration-150 cursor-pointer truncate">
 					{{ otherUser.nickname }}
 				</div>
 			</div>
 
 		</Modal>
-		<button></button>
 	</div>
-
 
 </template>
 
 <script setup lang="ts">
 import { useUserStore } from '../store/UserStore';
 import { computed, ref, watch, type ComputedRef, type Ref } from 'vue';
-import { getUsers, getUsersByNickname } from '../firebase/services/userService';
+import { getUsersByNickname } from '../firebase/services/userService';
+import { createChat, findChatBetweenUsers, getUserChats } from '../firebase/services/chatService';
+import { useRouter } from 'vue-router';
 import { type User } from '../interfaces/user';
+import { type Chat } from '../interfaces/chat';
 import Spinner from '../components/UI/Spinner.vue';
 import Modal from '../components/UI/Modal.vue';
-import { createChat, findChatBetweenUsers, getUserChats } from '../firebase/services/chatService';
-import type { Chat } from '../interfaces/chat';
+import ChatList from '../components/ChatList.vue';
 
+const router = useRouter();
 const userStore = useUserStore();
+
 const user: ComputedRef<User | null> = computed(() => userStore.user);
 let isLoading = ref<boolean>(true);
-let otherUsers: Ref<User[] | null> = ref(null);
+let otherUsers: Ref<User[] | null> = ref([]);
 let chats: Ref<Chat[] | []> = ref([]);
-const isModalOpen = ref(false);
-const nickname = ref('');
-
+const isModalOpen: Ref<boolean> = ref(false);
+const nickname: Ref<string> = ref('');
 
 const getSearch = async () => {
 	otherUsers.value = await getUsersByNickname(nickname.value);
 }
 
-const chat = async (userId2: string, userNickname2: string) => {
+const loadChat = async (userId2: string, userNickname2: string) => {
 	let result = await findChatBetweenUsers(user.value?.id ?? '0', userId2);
 	console.log(result);
 	if (!result) {
-		console.log('test 2');
 		const chatId = await createChat(user.value?.id ?? '0', user.value?.nickname ?? 'User', userId2, userNickname2);
-		await console.log(chatId);
+		openChat(chatId);
 	}
+	else {
+		openChat(result);
+	}
+	isModalOpen.value = false;
+	nickname.value = '';
+	otherUsers.value = [];
 }
 
 watch(user, async (user): Promise<void> => {
 	if (user?.id) {
-		otherUsers.value = await getUsers(user.id);
 		chats.value = await getUserChats(user.id);
-		await console.log(chats.value);
 		isLoading.value = false;
 	}
 }, { immediate: true });
 
-const getOtherMemberNickname = (members: Record<string, { id: string, nickname: string }>, excludeId: string) => {
-	const other = Object.values(members).find(member => member.id !== excludeId);
-	return other ? other.nickname : 'Unknown';
-}
+const openChat = (chatId: string) => {
+	router.push({ name: 'Chat', params: { chatId: chatId } });
+};
 
 </script>
