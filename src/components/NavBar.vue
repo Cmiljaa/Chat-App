@@ -74,11 +74,6 @@ const userStore = useUserStore();
 
 onMounted(async (): Promise<void> => {
 	onAuthStateChanged(auth, async (user) => {
-		if (user) {
-			const userFromDb = await getUser(user.uid);
-			userStore.setUser(userFromDb);
-		}
-
 		isLoggedIn.value = !!user;
 		isLoading.value = false;
 	});

@@ -4,6 +4,8 @@ import SignIn from "./pages/SignIn.vue";
 import SignUp from "./pages/SignUp.vue";
 import Chat from "./pages/Chat.vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useUserStore } from "./store/UserStore";
+import { getUser } from "./firebase/services/userService";
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -36,18 +38,27 @@ const waitForAuth = () => {
 };
 
 
+
 router.beforeEach(async (to, from, next) => {
-  const user = await waitForAuth();
+	const firebaseUser: any = await waitForAuth();
+	const userStore = useUserStore();
 
-  if (to.meta.authOnly && !user) {
-    return next({ name: 'SignIn' });
-  }
+	if (firebaseUser && !userStore.user) {
+		const userData = await getUser(firebaseUser.uid);
+		if (userData) {
+			userStore.setUser(userData);
+		}
+	}
 
-  if (to.meta.guestOnly && user) {
-    return next({ name: 'Messages' });
-  }
+	if (to.meta.authOnly && !firebaseUser) {
+		return next({ name: 'SignIn' });
+	}
 
-  return next();
+	if (to.meta.guestOnly && firebaseUser) {
+		return next({ name: 'Messages' });
+	}
+
+	return next();
 });
 
 export default router;
