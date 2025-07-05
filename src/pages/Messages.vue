@@ -5,13 +5,13 @@
 			<template v-if="!isLoading">
 				<div class="flex justify-between items-center px-6 mb-2">
 					<p class="text-white text-2xl font-semibold text-center truncate">
-						{{ user?.nickname || "User" }}
+						{{ user.nickname || "User" }}
 					</p>
 					<div class="text-white text-4xl">
 						<ion-icon name="create-outline" class="cursor-pointer" @click="isModalOpen = true"></ion-icon>
 					</div>
 				</div>
-				<ChatList :chats="chats" :userId="user?.id || ''" />
+				<ChatList :chats="chats" :userId="user.id ?? '0'" />
 			</template>
 
 			<template v-else>
@@ -47,7 +47,6 @@
 					{{ otherUser.nickname }}
 				</div>
 			</div>
-
 		</Modal>
 	</div>
 
@@ -59,19 +58,18 @@ import { computed, ref, watch, type ComputedRef, type Ref } from 'vue';
 import { getUsersByNickname } from '../firebase/services/userService';
 import { createChat, findChatBetweenUsers, getUserChats } from '../firebase/services/chatService';
 import { useRouter } from 'vue-router';
+import Spinner from '../components/UI/Spinner.vue';
+import Modal from '../components/UI/Modal.vue'; import ChatList from '../components/ChatList.vue';
 import { type User } from '../interfaces/user';
 import { type Chat } from '../interfaces/chat';
-import Spinner from '../components/UI/Spinner.vue';
-import Modal from '../components/UI/Modal.vue';
-import ChatList from '../components/ChatList.vue';
 
 const router = useRouter();
 const userStore = useUserStore();
 
-const user: ComputedRef<User | null> = computed(() => userStore.user);
+const user: ComputedRef<User> = computed(() => userStore.currentUser);
 let isLoading = ref<boolean>(true);
 let otherUsers: Ref<User[] | null> = ref([]);
-let chats: Ref<Chat[] | []> = ref([]);
+let chats: Ref<Chat[]> = ref([]);
 const isModalOpen: Ref<boolean> = ref(false);
 const nickname: Ref<string> = ref('');
 
@@ -95,7 +93,7 @@ const loadChat = async (userId2: string, userNickname2: string) => {
 }
 
 watch(user, async (user): Promise<void> => {
-	if (user?.id) {
+	if (user.id) {
 		chats.value = await getUserChats(user.id);
 		isLoading.value = false;
 	}
