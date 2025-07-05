@@ -1,3 +1,5 @@
+import type { Timestamp } from "firebase/firestore"
+
 export interface Chat{
 	id: string,
 	members: {
@@ -6,5 +8,5 @@ export interface Chat{
 			id: string
 		}
 	}
-	created_at: string
+	created_at: Timestamp
 };
