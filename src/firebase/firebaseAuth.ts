@@ -1,7 +1,7 @@
 import { type Router } from "vue-router";
-import { getDatabase, ref as dbRef, set } from "firebase/database";
 import { signInWithPopup, getAdditionalUserInfo, createUserWithEmailAndPassword, GoogleAuthProvider, getAuth, signInWithEmailAndPassword, type UserCredential } from "firebase/auth";
 import showToast from "../ToastNotifications";
+import { addUserToDb } from "./services/userService";
 
 const provider = new GoogleAuthProvider();
 
@@ -40,20 +40,4 @@ export const registerNewUser = async (nickname: string, email: string, password:
 	showToast('success', 'Your account was successfully created.');
 
 	return user;
-}
-
-export const addUserToDb = async (nickname: string, email: string, id: string): Promise<void> => {
-	const db = getDatabase();
-
-	try {
-		await set(dbRef(db, 'users/' + id), {
-			nickname,
-			email,
-			id,
-			created_at: Date.now()
-		});
-	} catch (error) {
-		console.error('Failed to add user to DB:', error);
-		showToast('error', 'Unexpected error');
-	}
 }
