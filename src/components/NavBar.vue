@@ -61,16 +61,13 @@
 import { ref } from 'vue';
 import { onMounted } from 'vue';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useUserStore } from '../store/UserStore';
 import SignOut from './SignOut.vue';
-import { getUser } from '../firebase/services/userService';
 import Spinner from './UI/Spinner.vue';
 
 let isOpen = ref<boolean>(false);
 const isLoggedIn = ref<boolean>(false);
 const isLoading = ref<boolean>(true);
 const auth = getAuth();
-const userStore = useUserStore();
 
 onMounted(async (): Promise<void> => {
 	onAuthStateChanged(auth, async (user) => {
