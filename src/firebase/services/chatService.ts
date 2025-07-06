@@ -1,35 +1,36 @@
-import { getDatabase, ref, get, push, set } from "firebase/database";
 import type { Chat } from "../../interfaces/chat";
+import { collection, doc, getDocs, getFirestore, setDoc } from "firebase/firestore";
 
 export const findChatBetweenUsers = async (userId1: string, userId2: string): Promise<string | null> => {
-  const db = getDatabase();
-  const chatsRef = ref(db, 'chats');
-  const snapshot = await get(chatsRef);
+	const db = getFirestore();
+	const chatsRef = collection(db, 'chats');
 
-  if (snapshot.exists()) {
-    const chats = snapshot.val();
-    for (const chatId in chats) {
-      const chat: Chat = chats[chatId];
-      const members: { [id: string]: { id:string, nickname: string } } = chat.members || {};
-      const memberIds = Object.keys(members);
+	try {
+		const snapshot = await getDocs(chatsRef);
 
-      const chatBetweenUsers: boolean = memberIds.includes(userId1) && memberIds.includes(userId2);
+		for (const docSnap of snapshot.docs) {
+			const chat = docSnap.data() as Chat;
 
-      if (chatBetweenUsers) {
-        return chatId;
-      }
-    }
-  }
+			const members = chat.members || {};
+			const memberIds = Object.keys(members);
 
-  return null;
+			if (memberIds.includes(userId1) && memberIds.includes(userId2)) {
+				return docSnap.id;
+			}
+		}
+
+		return null;
+	} catch (error) {
+		console.error("Error finding chat:", error);
+		return null;
+	}
 }
 
 export const createChat = async (userId1: string, userNickname1: string, userId2: string, userNickname2: string): Promise<string> => {
 
-	const db = getDatabase();
-	const chatsRef = ref(db, 'chats');
-	const newChatRef = push(chatsRef);
-	const newChatId: string = newChatRef.key!;
+	const db = getFirestore();
+	const newChatRef = doc(collection(db, 'chats'));
+	const newChatId = newChatRef.id;
 	const newChatData = {
 		createdAt: Date.now(),
 		id: newChatId,
@@ -44,29 +45,37 @@ export const createChat = async (userId1: string, userNickname1: string, userId2
 			},
 		}
 	};
-	await set(newChatRef, newChatData);
+	await setDoc(newChatRef, newChatData);
 
 	return newChatId;
 };
 
-export const getUserChats = async (userId: string) => {
-	const db = getDatabase();
-	const chatsRef = ref(db, 'chats');
-	const snapshot = await get(chatsRef);
+export const getUserChats = async (userId: string): Promise<Chat[]> => {
+	const db = getFirestore();
+	const chatsRef = collection(db, 'chats');
 
-	if (!snapshot.exists()) return [];
+	try {
+		const snapshot = await getDocs(chatsRef);
 
-	const chats = snapshot.val();
-	const userChats: { [chatId: string]: Chat } = {};
+		if (snapshot.empty) return [];
 
-	for (const chatId in chats) {
-		const chat: Chat = chats[chatId];
-		const members = chat.members || {};
+		const userChats: Chat[] = [];
 
-		if (members[userId]) {
-			userChats[chatId] = chat;
-		}
+		snapshot.forEach(docSnap => {
+			const data = docSnap.data();
+
+			if (data.members && data.members[userId]) {
+				userChats.push({
+					id: docSnap.id,
+					members: data.members,
+					created_at: data.created_at
+				});
+			}
+		});
+
+		return userChats;
+	} catch (error) {
+		console.error("Error fetching chats:", error);
+		return [];
 	}
-
-	return Object.values(userChats);
 };
