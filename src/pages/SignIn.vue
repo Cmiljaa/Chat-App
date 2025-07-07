@@ -17,8 +17,8 @@
 import { reactive } from 'vue';
 import { signInUser } from '../firebase/firebaseAuth';
 import { required, minLength, email } from '@vuelidate/validators';
-import BaseInput from '../components/BaseInput.vue';
-import AuthForm from '../components/AuthForm.vue';
+import BaseInput from '../components/ui/BaseInput.vue';
+import AuthForm from '../components/auth/AuthForm.vue';
 
 const formData = reactive({
 	email: '',

@@ -41,11 +41,11 @@
 import { useUserStore } from '../store/UserStore';
 import { computed, onMounted, onUnmounted, ref, watch, type ComputedRef, type Ref } from 'vue';
 import { getUserChats } from '../firebase/services/chatService';
-import Spinner from '../components/UI/Spinner.vue';
+import Spinner from '../components/ui/Spinner.vue';
 import { type User } from '../interfaces/user';
 import { type Chat } from '../interfaces/chat';
-import CreateChat from '../components/CreateChat.vue';
-import ChatList from '../components/ChatList.vue';
+import CreateChat from '../components/chat/CreateChat.vue';
+import ChatList from '../components/chat/ChatList.vue';
 
 const userStore = useUserStore();
 
