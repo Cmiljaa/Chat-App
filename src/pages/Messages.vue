@@ -32,64 +32,34 @@
 			</RouterView>
 		</div>
 
-		<Modal v-model:isOpen="isModalOpen">
-			<div class="flex items-center gap-2 w-full max-w-sm">
-				<input type="text" placeholder="Search..." v-model="nickname"
-					class="flex-grow px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1" />
-
-				<ion-icon name="search-outline" @click="getSearch()"
-					class="text-white text-2xl cursor-pointer transition duration-200"></ion-icon>
-			</div>
-			<div class="flex-1 mt-2 overflow-y-auto custom-scroll space-y-1">
-				<div v-for="otherUser in otherUsers" :key="otherUser.id"
-					@click="loadChat(otherUser.id, otherUser.nickname)"
-					class="text-white px-6 rounded-lg py-3 hover:bg-[#000] transition-colors duration-150 cursor-pointer truncate">
-					{{ otherUser.nickname }}
-				</div>
-			</div>
-		</Modal>
+		<CreateChat :user="user" v-model:isModalOpen="isModalOpen" @chatCreated="handleChatCreation" />
 	</div>
 
 </template>
 
 <script setup lang="ts">
 import { useUserStore } from '../store/UserStore';
-import { computed, ref, watch, type ComputedRef, type Ref } from 'vue';
-import { getUsersByNickname } from '../firebase/services/userService';
-import { createChat, findChatBetweenUsers, getUserChats } from '../firebase/services/chatService';
-import { useRouter } from 'vue-router';
+import { computed, onMounted, onUnmounted, ref, watch, type ComputedRef, type Ref } from 'vue';
+import { getUserChats } from '../firebase/services/chatService';
 import Spinner from '../components/UI/Spinner.vue';
-import Modal from '../components/UI/Modal.vue'; import ChatList from '../components/ChatList.vue';
 import { type User } from '../interfaces/user';
 import { type Chat } from '../interfaces/chat';
+import CreateChat from '../components/CreateChat.vue';
+import ChatList from '../components/ChatList.vue';
 
-const router = useRouter();
 const userStore = useUserStore();
 
 const user: ComputedRef<User> = computed(() => userStore.currentUser);
 let isLoading = ref<boolean>(true);
-let otherUsers: Ref<User[] | null> = ref([]);
 let chats: Ref<Chat[]> = ref([]);
 const isModalOpen: Ref<boolean> = ref(false);
-const nickname: Ref<string> = ref('');
 
-const getSearch = async () => {
-	otherUsers.value = await getUsersByNickname(nickname.value);
-}
+const handleChatCreation = (chat: Chat | string): void => {
+	if (typeof chat === 'object') {
+		chats.value.push(chat);
+	}
 
-const loadChat = async (userId2: string, userNickname2: string) => {
-	let result = await findChatBetweenUsers(user.value?.id ?? '0', userId2);
-	console.log(result);
-	if (!result) {
-		const chatId = await createChat(user.value?.id ?? '0', user.value?.nickname ?? 'User', userId2, userNickname2);
-		openChat(chatId);
-	}
-	else {
-		openChat(result);
-	}
 	isModalOpen.value = false;
-	nickname.value = '';
-	otherUsers.value = [];
 }
 
 watch(user, async (user): Promise<void> => {
@@ -99,8 +69,18 @@ watch(user, async (user): Promise<void> => {
 	}
 }, { immediate: true });
 
-const openChat = (chatId: string) => {
-	router.push({ name: 'Chat', params: { chatId: chatId } });
+const onKeyDown = (event: KeyboardEvent): void => {
+	if (event.key === 'Escape') {
+		isModalOpen.value = false;
+	}
 };
+
+onMounted((): void => {
+	window.addEventListener('keydown', onKeyDown);
+});
+
+onUnmounted((): void => {
+	window.removeEventListener('keydown', onKeyDown);
+});
 
 </script>
