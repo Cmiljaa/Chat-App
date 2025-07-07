@@ -23,8 +23,8 @@
 import { computed, reactive } from 'vue';
 import { registerNewUser } from '../firebase/firebaseAuth';
 import { required, minLength, email, sameAs, helpers } from '@vuelidate/validators';
-import AuthForm from '../components/AuthForm.vue';
-import BaseInput from '../components/BaseInput.vue';
+import AuthForm from '../components/auth/AuthForm.vue';
+import BaseInput from '../components/ui/BaseInput.vue';
 
 const formData = reactive({
 	nickname: '',

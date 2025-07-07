@@ -32,7 +32,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
-import { googleAuth } from '../firebase/firebaseAuth';
+import { googleAuth } from '../../firebase/firebaseAuth';
 
 const props = defineProps<{
 	formData: Record<string, any>,
@@ -61,7 +61,7 @@ const submitAuth = async (): Promise<void> => {
 	loading.value = true;
 
 	try {
-		const user = await authFunction(...Object.values(formData));
+		await authFunction(...Object.values(formData));
 		await router.push({ name: 'Messages' });
 
 	} catch (error: any) {

@@ -8,8 +8,8 @@
 import { useRouter } from "vue-router";
 import { signOut } from "firebase/auth";
 import { getAuth } from "firebase/auth";
-import { useUserStore } from "../store/UserStore";
-import showToast from "../ToastNotifications";
+import { useUserStore } from "../../store/UserStore";
+import showToast from "../../ToastNotifications";
 
 const props = defineProps<{
 	customClass: string

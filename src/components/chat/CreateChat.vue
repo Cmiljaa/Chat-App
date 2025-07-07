@@ -19,14 +19,14 @@
 
 <script setup lang="ts">
 import { ref, type Ref } from 'vue';
-import { getUsersByNickname } from '../firebase/services/userService';
-import type { User } from '../interfaces/user';
 import { useRouter } from 'vue-router';
-import useChatActions from '../composables/useChatActions';
-import Modal from './UI/Modal.vue';
-import type { Chat } from '../interfaces/chat';
+import { getUsersByNickname } from '../../firebase/services/userService';
+import useChatActions from '../../composables/useChatActions';
+import type { User } from '../../interfaces/user';
+import type { Chat } from '../../interfaces/chat';
+import Modal from '../ui/Modal.vue';
 
-defineProps<{
+const props = defineProps<{
 	isModalOpen: boolean,
 	user: User
 }>();
@@ -43,7 +43,7 @@ const emit = defineEmits<{
 }>();
 
 const getSearch = async (): Promise<void> => {
-	searchedUsers.value = await getUsersByNickname(nickname.value);
+	searchedUsers.value = await getUsersByNickname(nickname.value, props.user.nickname);
 }
 
 const handleChatAccess = async (userId1: string, userNickname1: string, userId2: string, userNickname2: string): Promise<void> => {

@@ -61,8 +61,8 @@
 import { ref } from 'vue';
 import { onMounted } from 'vue';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import SignOut from './SignOut.vue';
-import Spinner from './UI/Spinner.vue';
+import SignOut from '../auth/SignOut.vue';
+import Spinner from '../ui/Spinner.vue';
 
 let isOpen = ref<boolean>(false);
 const isLoggedIn = ref<boolean>(false);
