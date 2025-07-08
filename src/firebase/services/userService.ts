@@ -35,7 +35,7 @@ export const getUser = async (userId: string): Promise<User | null> => {
 	}
 }
 
-export const getUsersByNickname = async (nickname: string): Promise<User[]> => {
+export const getUsersByNickname = async (nickname: string, userNickname: string): Promise<User[]> => {
 
 const db = getFirestore();
 const usersRef = collection(db, 'users');
@@ -50,10 +50,10 @@ const userQuery = query(
 try {
 	const snapshot = await getDocs(userQuery);
 	if (!snapshot.empty) {
-		const users = snapshot.docs.map(doc => ({
-			id: doc.id,
-			...doc.data()
-		}));
+		const users = snapshot.docs.map((doc) => {
+          const data = doc.data() as Omit<User, 'id'>;
+          return { id: doc.id, ...data };
+        }).filter(user => user.nickname !== userNickname);  
 
 		return users as User[];
     } else {
