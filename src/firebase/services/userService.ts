@@ -10,7 +10,7 @@ export const addUserToDb = async (nickname: string, email: string, id: string): 
 			nickname,
 			email,
 			id,
-			created_at: serverTimestamp()
+			createdAt: serverTimestamp()
 		}, { merge: true });
 	} catch (error) {
 		console.error('Failed to add user to DB:', error);
