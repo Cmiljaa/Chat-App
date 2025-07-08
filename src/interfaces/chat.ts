@@ -8,5 +8,5 @@ export interface Chat{
 			id: string
 		}
 	}
-	created_at: Timestamp
+	createdAt: Timestamp
 };

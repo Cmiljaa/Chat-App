@@ -32,7 +32,7 @@ export const createChat = async (userId1: string, userNickname1: string, userId2
 	const newChatRef = doc(collection(db, 'chats'));
 	const newChatId = newChatRef.id;
 	const newChatData = {
-		created_at: serverTimestamp() as any,
+		createdAt: serverTimestamp() as any,
 		id: newChatId,
 		members: {
 			[userId1]: {
@@ -68,7 +68,7 @@ export const getUserChats = async (userId: string): Promise<Chat[]> => {
 				userChats.push({
 					id: docSnap.id,
 					members: data.members,
-					created_at: data.created_at
+					createdAt: data.createdAt
 				});
 			}
 		});
