@@ -23,7 +23,7 @@
 		<RouterView v-slot="{ Component }">
 			<template v-if="Component">
 				<div class="w-3/4 flex flex-col h-[calc(100vh-60px)]">
-					<component :is="Component" class="flex-1" :user="user" />
+					<component :is="Component" class="flex-1" />
 				</div>
 			</template>
 			<template v-else>

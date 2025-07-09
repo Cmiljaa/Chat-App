@@ -75,7 +75,7 @@ export const getUserChats = async (userId: string): Promise<Chat[]> => {
 
 		return userChats;
 	} catch (error) {
-		console.error("Error fetching chats:", error);
+		console.error("Error while fetching the chats :", error);
 		return [];
 	}
 };
