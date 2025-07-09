@@ -6,9 +6,11 @@ export const sendMessage = async (senderId: string, messageText: string, chatId:
 	const db = getFirestore();
 
 	try {
-		await setDoc(doc(db, 'messages'), {
+		const newMessageRef = doc(collection(db, 'messages')); 
+		await setDoc(newMessageRef, {
+			id: newMessageRef.id,
 			senderId,
-			messageText,
+			text: messageText,
 			chatId,
 			createdAt: serverTimestamp()
 		}, { merge: true });
@@ -29,12 +31,12 @@ try {
 	if (!snapshot.empty) {
 		const messages = snapshot.docs.map(doc => {
         const data = doc.data() as Message;
-			return { id: doc.id, ...data };
+			return { ...data };
 		});
 
 		return messages as Message[];
 	} else {
-		console.log("No users found");
+		console.log("No messages found");
 		return [];
 	}
 } catch (error) {
