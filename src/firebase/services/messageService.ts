@@ -1,10 +1,11 @@
-import { collection, doc, getDocs, getFirestore, orderBy, query, serverTimestamp, setDoc, where } from "firebase/firestore";
+import { collection, doc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import showToast from "../../ToastNotifications";
 import type { Message } from "../../interfaces/message";
+import type { Ref } from "vue";
 
 export const sendMessage = async (senderId: string, messageText: string, chatId: string) => {
 	const db = getFirestore();
-
+	console.log(messageText);
 	try {
 		const newMessageRef = doc(collection(db, 'messages')); 
 		await setDoc(newMessageRef, {
@@ -20,26 +21,46 @@ export const sendMessage = async (senderId: string, messageText: string, chatId:
 	}
 }
 
-export const getChatMessages = async (chatId: string) => {
+export const getChatMessages = async (chatId: string, messages: Ref<Message[]>): Promise<void> => {
+
 const db = getFirestore();
 const messagesRef = collection(db, 'messages');
 
 const messagesQuery = query(messagesRef, where('chatId', '==', chatId), orderBy('createdAt', 'asc'));
 
-try {
-	const snapshot = await getDocs(messagesQuery);
-	if (!snapshot.empty) {
-		const messages = snapshot.docs.map(doc => {
-        const data = doc.data() as Message;
-			return { ...data };
-		});
+	try {
 
-		return messages as Message[];
-	} else {
-		console.log("No messages found");
-		return [];
+		onSnapshot(messagesQuery, (querySnapshot) => {
+			querySnapshot.docChanges().forEach((change) => {
+				const doc = change.doc
+				const data = doc.data() as Message
+
+				const message: Message = { ...data }
+
+				switch (change.type) {
+					case 'added':
+							messages.value.splice(change.newIndex, 0, message)
+						break;
+
+					case 'modified':
+							if (change.oldIndex !== change.newIndex) {
+								messages.value.splice(change.oldIndex, 1);
+								messages.value.splice(change.newIndex, 0, message);
+							} else {
+								messages.value.splice(change.newIndex, 1, message);
+							}
+						break;
+
+					case 'removed':
+							messages.value.splice(change.oldIndex, 1)
+						break;
+				
+					default:
+						break;
+				}
+			})
+		});
+	} catch (error) {
+		console.error(error);
 	}
-} catch (error) {
-	console.error(error);
-	return [];
-}};
+};
