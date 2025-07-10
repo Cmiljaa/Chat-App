@@ -1,9 +1,15 @@
 <template>
-	<div class="flex flex-col  flex-1 h-[calc(100vh-60px)] bg-purple-700">
-		<div class="flex flex-col h-full">
-			<div class="flex-1 overflow-y-auto p-4 space-y-2">
-				<div class="bg-gray-200 p-2 rounded-md w-fit">Message 1</div>
-				<div class="bg-blue-500 text-white p-2 rounded-md w-fit self-end">Message 2</div>
+	<div class="flex flex-col flex-1 h-[calc(100vh-60px)]">
+		<div class="flex flex-col h-full" v-if="!isLoading">
+			<div class="flex-1 overflow-y-auto p-4 space-y-2 flex flex-col">
+				<div v-for="chatMessage in chatMessages" :key="chatMessage.id" class="flex"
+					:class="chatMessage.senderId === user.id ? 'justify-end' : 'justify-start'">
+					<div :class="chatMessage.senderId === user.id
+						? 'bg-blue-500 text-white rounded-bl-lg rounded-tr-lg rounded-tl-lg shadow-md'
+						: 'bg-gray-200 text-gray-900 rounded-br-lg rounded-tl-lg rounded-tr-lg shadow-sm'" class="p-2 w-fit max-w-xs">
+						{{ chatMessage.text }}
+					</div>
+				</div>
 			</div>
 
 			<div class="p-3 border-t bg-white">
@@ -35,17 +41,19 @@ const message: Ref<string> = ref('');
 const isDisabled: Ref<boolean> = ref(true);
 
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
+const chatMessages: Ref<Message[]> = ref([]);
 
 const handleSendingMessage = async (messageText: string) => {
 	await sendMessage(user.value.id, messageText, props.chatId);
 }
 
 watch(message, () => {
-	if (message.value === '') {
-		isDisabled.value = true;
-	}
-	else {
-		isDisabled.value = false;
+	isDisabled.value = message.value.trim() === '';
+});
+
+watch(() => route.params.chatId, async (newChatId, oldChatId) => {
+	if (newChatId !== oldChatId) {
+		await fetchChatMessages();
 	}
 });
 
