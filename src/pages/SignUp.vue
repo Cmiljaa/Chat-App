@@ -23,7 +23,7 @@
 import { registerNewUser } from '../firebase/firebaseAuth';
 import AuthForm from '../components/auth/AuthForm.vue';
 import BaseInput from '../components/ui/BaseInput.vue';
-import useAuthForm from '../composables/useAuthForm';
+import useAuthForm from '../composables/auth/useAuthForm';
 
 const { formData, rules, handleErrors } = useAuthForm('signup');
 

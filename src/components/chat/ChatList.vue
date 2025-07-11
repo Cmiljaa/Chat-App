@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import type { Chat } from '../../interfaces/chat';
-import useChatList from '../../composables/useChatList';
+import useChatList from '../../composables/chat/useChatList';
 
 defineProps<{
 	chats: Chat[],
