@@ -20,35 +20,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive } from 'vue';
 import { registerNewUser } from '../firebase/firebaseAuth';
-import { required, minLength, email, sameAs, helpers } from '@vuelidate/validators';
 import AuthForm from '../components/auth/AuthForm.vue';
 import BaseInput from '../components/ui/BaseInput.vue';
+import useAuthForm from '../composables/useAuthForm';
 
-const formData = reactive({
-	nickname: '',
-	email: '',
-	password: '',
-	repeatPassword: ''
-});
-
-const rules = {
-	nickname: { required, minLength: minLength(5) },
-	email: { required, email },
-	password: { required, minLength: minLength(6) },
-	repeatPassword: { required, sameAsPassword: helpers.withMessage('Passwords do not match', sameAs(computed(() => formData.password))) }
-}
-
-const handleErrors = (error: any): string => {
-	switch (error.code) {
-		case 'auth/weak-password':
-			return 'Password should be at least 6 characters long.';
-		case 'auth/invalid-email':
-			return 'Please enter a valid email address.'
-		default:
-			return 'An unexpected error occurred. Please try again.';
-	}
-}
+const { formData, rules, handleErrors } = useAuthForm('signup');
 
 </script>
