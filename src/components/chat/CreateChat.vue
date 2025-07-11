@@ -26,6 +26,7 @@ import type { User } from '../../interfaces/user';
 import type { Chat } from '../../interfaces/chat';
 import Modal from '../ui/Modal.vue';
 import useCurrentUser from '../../composables/useCurrentUser';
+import useChatList from '../../composables/useChatList';
 
 defineProps<{
 	isModalOpen: boolean
@@ -36,7 +37,8 @@ let searchedUsers: Ref<User[]> = ref([]);
 const router = useRouter();
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
 
-const { openChat, loadOrCreateChat } = useChatActions();
+const { openChat } = useChatList();
+const { loadOrCreateChat } = useChatActions(user);
 
 const emit = defineEmits<{
 	(e: 'update:isModalOpen', value: boolean): void,
