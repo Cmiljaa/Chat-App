@@ -14,34 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
 import { signInUser } from '../firebase/firebaseAuth';
-import { required, minLength, email } from '@vuelidate/validators';
 import BaseInput from '../components/ui/BaseInput.vue';
 import AuthForm from '../components/auth/AuthForm.vue';
+import useAuthForm from '../composables/useAuthForm';
 
-const formData = reactive({
-	email: '',
-	password: ''
-});
-
-const rules = {
-	email: { required, email },
-	password: { required, minLength: minLength(6) },
-}
-
-const handleErrors = (error: string): string => {
-	switch (error) {
-		case 'auth/invalid-credential':
-		case 'auth/user-not-found':
-		case 'auth/wrong-password':
-			return 'Invalid email or password.';
-		case 'auth/user-disabled':
-			return 'This account has been disabled. Please contact support.';
-		case 'auth/too-many-requests':
-			return 'Too many failed attempts. Please wait and try again later.';
-		default:
-			return 'An unexpected error occurred. Please try again.';
-	}
-}
+const { formData, rules, handleErrors } = useAuthForm('signin');
 </script>
