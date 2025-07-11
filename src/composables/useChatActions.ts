@@ -1,6 +1,8 @@
 import { type Router } from "vue-router";
 import { createChat, findChatBetweenUsers } from "../firebase/services/chatService";
 import type { Chat } from "../interfaces/chat";
+import useChatList from "./useChatList";
+const { openChat } = useChatList();
 
 export default function useChatActions(){
 
@@ -19,18 +21,10 @@ export default function useChatActions(){
 		}
 	}
 
-	const openChat = (chatId: string, router: Router): void => {
-		router.push({ name: 'Chat', params: { chatId: chatId } });
 	};
 
-	const getOtherMemberNickname = (members: Record<string, { id: string, nickname: string }>, excludeId: string): string => {
-		const other = Object.values(members).find(member => member.id !== excludeId);
-		return other ? other.nickname : 'Unknown';
-	}
 
 	return {
-		openChat,
-		getOtherMemberNickname,
 		loadOrCreateChat
 	};
 };
