@@ -40,47 +40,16 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch, type ComputedRef, type Ref } from 'vue';
-import { getUserChats } from '../firebase/services/chatService';
-import { type User } from '../interfaces/user';
-import { type Chat } from '../interfaces/chat';
+
 import Spinner from '../components/ui/Spinner.vue';
 import CreateChat from '../components/chat/CreateChat.vue';
 import ChatList from '../components/chat/ChatList.vue';
+import useChatActions from '../composables/useChatActions';
+import type { ComputedRef } from 'vue';
 import useCurrentUser from '../composables/useCurrentUser';
+import type { User } from '../interfaces/user';
 
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
-let isLoading = ref<boolean>(true);
-let chats: Ref<Chat[]> = ref([]);
-const isModalOpen: Ref<boolean> = ref(false);
-
-const handleChatCreation = (chat: Chat | string): void => {
-	if (typeof chat === 'object') {
-		chats.value.push(chat);
-	}
-
-	isModalOpen.value = false;
-}
-
-watch(user, async (user): Promise<void> => {
-	if (user.id) {
-		chats.value = await getUserChats(user.id);
-		isLoading.value = false;
-	}
-}, { immediate: true });
-
-const onKeyDown = (event: KeyboardEvent): void => {
-	if (event.key === 'Escape') {
-		isModalOpen.value = false;
-	}
-};
-
-onMounted((): void => {
-	window.addEventListener('keydown', onKeyDown);
-});
-
-onUnmounted((): void => {
-	window.removeEventListener('keydown', onKeyDown);
-});
+const { handleChatCreation, isModalOpen, isLoading, chats } = useChatActions(user);
 
 </script>
