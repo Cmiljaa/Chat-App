@@ -17,7 +17,7 @@
 import { signInUser } from '../firebase/firebaseAuth';
 import BaseInput from '../components/ui/BaseInput.vue';
 import AuthForm from '../components/auth/AuthForm.vue';
-import useAuthForm from '../composables/useAuthForm';
+import useAuthForm from '../composables/auth/useAuthForm';
 
 const { formData, rules, handleErrors } = useAuthForm('signin');
 </script>

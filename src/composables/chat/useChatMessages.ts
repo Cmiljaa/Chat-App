@@ -1,8 +1,8 @@
 import { computed, onMounted, onUnmounted, ref, watch, type ComputedRef, type Ref } from "vue";
-import type { User } from "../interfaces/user";
-import type { Message } from "../interfaces/message";
+import type { User } from "../../interfaces/user";
+import type { Message } from "../../interfaces/message";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
-import { getChatMessages, sendMessage } from "../firebase/services/messageService";
+import { getChatMessages, sendMessage } from "../../firebase/services/messageService";
 
 export default function useChatMessages(user: ComputedRef<User>, route: RouteLocationNormalizedLoaded ){
 

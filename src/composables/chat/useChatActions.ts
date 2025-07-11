@@ -1,8 +1,8 @@
 import { type Router } from "vue-router";
-import { createChat, findChatBetweenUsers, getUserChats } from "../firebase/services/chatService";
-import type { Chat } from "../interfaces/chat";
+import { createChat, findChatBetweenUsers, getUserChats } from "../../firebase/services/chatService";
+import type { Chat } from "../../interfaces/chat";
 import { onMounted, onUnmounted, ref, watch, type ComputedRef, type Ref } from 'vue';
-import type { User } from "../interfaces/user";
+import type { User } from "../../interfaces/user";
 import useChatList from "./useChatList";
 
 const { openChat } = useChatList();

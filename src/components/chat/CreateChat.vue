@@ -21,12 +21,12 @@
 import { ref, type ComputedRef, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getUsersByNickname } from '../../firebase/services/userService';
-import useChatActions from '../../composables/useChatActions';
+import useChatActions from '../../composables/chat/useChatActions';
 import type { User } from '../../interfaces/user';
 import type { Chat } from '../../interfaces/chat';
 import Modal from '../ui/Modal.vue';
-import useCurrentUser from '../../composables/useCurrentUser';
-import useChatList from '../../composables/useChatList';
+import useCurrentUser from '../../composables/auth/useCurrentUser';
+import useChatList from '../../composables/chat/useChatList';
 
 defineProps<{
 	isModalOpen: boolean

@@ -44,9 +44,9 @@
 import Spinner from '../components/ui/Spinner.vue';
 import CreateChat from '../components/chat/CreateChat.vue';
 import ChatList from '../components/chat/ChatList.vue';
-import useChatActions from '../composables/useChatActions';
+import useChatActions from '../composables/chat/useChatActions';
 import type { ComputedRef } from 'vue';
-import useCurrentUser from '../composables/useCurrentUser';
+import useCurrentUser from '../composables/auth/useCurrentUser';
 import type { User } from '../interfaces/user';
 
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
