@@ -26,7 +26,7 @@ export default function useAuthForm(method: 'signup' | 'signin'){
 					required,
 					sameAsPassword: helpers.withMessage(
 						'Passwords do not match',
-						sameAs(() => formData.password)
+						sameAs(computed(() => formData.password))
 					)
 				}
 			};
