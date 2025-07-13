@@ -1,6 +1,10 @@
 <template>
 	<div class="flex flex-col flex-1 h-[calc(100vh-60px)]">
 		<div class="flex flex-col h-full" v-if="!isLoading">
+			<div
+				class="bg-[#0d0d0d] px-6 py-7 h-12 flex items-center border-l border-gray-700 sticky top-0 z-10 w-full shadow-sm">
+				<span class="text-xl font-semibold text-white">{{ otherUserNickname ?? 'Unknown' }}</span>
+			</div>
 			<div class="flex-1 overflow-y-auto p-4 space-y-2 flex flex-col">
 				<div v-for="chatMessage in chatMessages" :key="chatMessage.id" class="flex"
 					:class="chatMessage.senderId === user.id ? 'justify-end' : 'justify-start'">
@@ -38,6 +42,6 @@ import useChatMessages from '../composables/chat/useChatMessages';
 const route = useRoute();
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
 
-const { isLoading, chatMessages, message, handleSendingMessage, isDisabled } = useChatMessages(user, route);
+const { isLoading, chatMessages, message, handleSendingMessage, isDisabled, otherUserNickname } = useChatMessages(user, route);
 
 </script>

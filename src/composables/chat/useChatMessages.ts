@@ -59,6 +59,7 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		chatMessages,
 		message,
 		handleSendingMessage,
+		otherUserNickname,
 		isDisabled
 	}
 }
