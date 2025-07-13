@@ -53,7 +53,7 @@ const handleChatAccess = async (userId1: string, userNickname1: string, userId2:
 	const result: Chat | string = await loadOrCreateChat(userId1, userNickname1, userId2, userNickname2, router);
 
 	if (typeof result === 'string') {
-		handleOpenChat(result);
+		handleOpenChat(result, userNickname2);
 		emit('chatCreated', result);
 	} else {
 		emit('chatCreated', result);
@@ -63,8 +63,8 @@ const handleChatAccess = async (userId1: string, userNickname1: string, userId2:
 	searchedUsers.value = [];
 }
 
-const handleOpenChat = (chatId: string): void => {
-	openChat(chatId, router);
+const handleOpenChat = (chatId: string, nickname: string): void => {
+	openChat(chatId, router, nickname);
 }
 
 </script>

@@ -9,6 +9,7 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 	const message: Ref<string> = ref('');
 	const isDisabled: Ref<boolean> = ref(true);
 	const chatId: Ref<string> = computed(() => route.params.chatId as string);
+	const otherUserNickname: Ref<string> = computed(() => route.query.nickname as string);
 	const chatMessages: Ref<Message[]> = ref([]);
 	let isLoading: Ref<boolean> = ref<boolean>(true);
 
