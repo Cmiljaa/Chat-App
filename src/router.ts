@@ -12,7 +12,7 @@ const router = createRouter({
 	routes: [
 		{ path: '/', redirect: '/messages' },
 		{ path: '/messages', name: 'Messages', component: Messages, meta: { authOnly: true }, children: [
-			{ path: ':chatId', name: 'Chat', component: Chat }
+			{ path: ':chatId', name: 'Chat', component: Chat, meta: { nickname: '' } }
 		]},
 		{ path: '/signUp', name: 'SignUp', component: SignUp, meta: { guestOnly: true } },
 		{ path: '/signIn', name: 'SignIn', component: SignIn, meta: { guestOnly: true } },

@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<p v-if="chats.length" v-for="chat in chats" :key="chat.id" @click="handleOpenChat(chat.id)"
+		<p v-if="chats.length" v-for="chat in chats" :key="chat.id"
+			@click="handleOpenChat(chat.id, getOtherMemberNickname(chat.members, userId))"
 			class="text-white text-lg px-6 py-3 hover:bg-white/10 transition-colors duration-150 cursor-pointer truncate">
 			{{ getOtherMemberNickname(chat.members, userId) }}
 		</p>
@@ -24,8 +25,8 @@ const router = useRouter();
 
 const { openChat, getOtherMemberNickname } = useChatList();
 
-const handleOpenChat = (chatId: string) => {
-	openChat(chatId, router);
+const handleOpenChat = (chatId: string, nickname: string) => {
+	openChat(chatId, router, nickname);
 }
 
 </script>
