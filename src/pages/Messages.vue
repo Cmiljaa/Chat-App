@@ -1,6 +1,6 @@
 <template>
 	<div class="flex">
-		<div class="w-1/4 bg-[#0d0d0d] p-4 flex flex-col h-[calc(100vh-60px)] border-r border-[#1f1f1f]">
+		<div class="w-1/4 bg-[#0d0d0d] p-4 flex flex-col h-[calc(100vh-60px)]">
 
 			<template v-if="!isLoading">
 				<div class="flex justify-between items-center px-6 mb-2">
