@@ -4,14 +4,15 @@ import type { Message } from "../../interfaces/message";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
 import { getChatMessages, sendMessage } from "../../firebase/services/messageService";
 
-export default function useChatMessages(user: ComputedRef<User>, route: RouteLocationNormalizedLoaded ){
+export default function useChatMessages(user: ComputedRef<User>, route: RouteLocationNormalizedLoaded){
 
 	const message: Ref<string> = ref('');
 	const isDisabled: Ref<boolean> = ref(true);
 	const chatId: Ref<string> = computed(() => route.params.chatId as string);
 	const otherUserNickname: Ref<string> = computed(() => route.query.nickname as string);
 	const chatMessages: Ref<Message[]> = ref([]);
-	let isLoading: Ref<boolean> = ref<boolean>(true);
+	const isLoading: Ref<boolean> = ref<boolean>(true);
+	const chatContainer = ref<HTMLElement | null>(null);
 
 	const handleSendingMessage = async () => {
 		isDisabled.value = false;
@@ -23,10 +24,16 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 
 	const fetchChatMessages = async () => {
 		chatMessages.value = [];
-		isLoading.value = true;
 		await getChatMessages(chatId.value, chatMessages);
-		isLoading.value = false;
+		setTimeout(() => isLoading.value = false, 100);
 	};
+
+	const scrollToBottom = () => {
+		if (chatContainer.value) {
+			chatContainer.value.scrollTop = chatContainer.value.scrollHeight
+			console.log(chatContainer.value);
+		}
+	}
 
 	watch(message, () => {
 		isDisabled.value = message.value.trim() === '';
@@ -37,7 +44,7 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 			await fetchChatMessages();
 		}
 	});
-
+	
 	const onKeyDown = async (event: KeyboardEvent): Promise<void> => {
 		if (event.key === 'Enter' && message.value.trim() != '') {
 			await handleSendingMessage();
@@ -46,12 +53,11 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 
 	onMounted(async (): Promise<void> => {
 		await fetchChatMessages();
-
 		window.addEventListener('keydown', onKeyDown);
 	});
 
 	onUnmounted((): void => {
-			window.removeEventListener('keydown', onKeyDown);
+		window.removeEventListener('keydown', onKeyDown);
 	});
 
 	return {
@@ -60,6 +66,8 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		message,
 		handleSendingMessage,
 		otherUserNickname,
-		isDisabled
+		isDisabled,
+		chatContainer,
+		scrollToBottom
 	}
 }
