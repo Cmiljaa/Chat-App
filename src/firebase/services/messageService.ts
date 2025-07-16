@@ -3,9 +3,8 @@ import showToast from "../../ToastNotifications";
 import type { Message } from "../../interfaces/message";
 import type { Ref } from "vue";
 
-export const sendMessage = async (senderId: string, messageText: string, chatId: string) => {
+export const sendMessage = async (senderId: string, messageText: string, chatId: string): Promise<void> => {
 	const db = getFirestore();
-	console.log(messageText);
 	try {
 		const newMessageRef = doc(collection(db, 'messages')); 
 		await setDoc(newMessageRef, {
