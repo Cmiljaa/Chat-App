@@ -24,7 +24,6 @@
 						:class="['px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer', { 'bg-gray-400 ': isDisabled }]">
 						Send
 					</button>
-					<button @click="scrollToBottom">Test Scroll</button>
 				</div>
 			</div>
 		</div>
@@ -33,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, watchEffect, type ComputedRef } from 'vue';
+import { type ComputedRef } from 'vue';
 import useCurrentUser from '../composables/auth/useCurrentUser';
 import type { User } from '../interfaces/user';
 import { useRoute } from 'vue-router';
@@ -43,15 +42,7 @@ import useChatMessages from '../composables/chat/useChatMessages';
 const route = useRoute();
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
 
-const { chatContainer, scrollToBottom, isLoading, chatMessages, message, handleSendingMessage, isDisabled, otherUserNickname } = useChatMessages(user, route);
-
-watchEffect(() => {
-	if (!isLoading) {
-		nextTick(() => {
-			scrollToBottom();
-		});
-	}
-});
+const { chatContainer, isLoading, chatMessages, message, handleSendingMessage, isDisabled, otherUserNickname } = useChatMessages(user, route);
 
 
 
