@@ -4,12 +4,7 @@ import 'vue-toast-notification/dist/theme-sugar.css'
 const $toast = useToast()
 
 const showToast = (method: 'success' | 'info' | 'warning' | 'error', message: string): void => {
-	
-  const instance = $toast[method](message, { duration: 5000 })
-
-  setTimeout(() => {
-    instance.dismiss();
-  }, 3000)
+  	$toast[method](message, { duration: 3000 });
 };
 
 export default showToast;
