@@ -1,4 +1,4 @@
-import { computed, onMounted, onUnmounted, ref, watch, type ComputedRef, type Ref } from "vue";
+import { computed, nextTick, onMounted, onUnmounted, ref, watch, type ComputedRef, type Ref } from "vue";
 import type { User } from "../../interfaces/user";
 import type { Message } from "../../interfaces/message";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
@@ -31,7 +31,6 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 	const scrollToBottom = () => {
 		if (chatContainer.value) {
 			chatContainer.value.scrollTop = chatContainer.value.scrollHeight
-			console.log(chatContainer.value);
 		}
 	}
 
@@ -44,7 +43,17 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 			await fetchChatMessages();
 		}
 	});
-	
+
+	watch(isLoading, async (val) => {
+		if (!val) {
+			await nextTick();
+			if (chatContainer.value) {
+				observer = new MutationObserver(() => scrollToBottom());
+				observer.observe(chatContainer.value, { childList: true, subtree: true });
+			}
+		}
+	});
+
 	const onKeyDown = async (event: KeyboardEvent): Promise<void> => {
 		if (event.key === 'Enter' && message.value.trim() != '') {
 			await handleSendingMessage();
@@ -58,6 +67,8 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 
 	onUnmounted((): void => {
 		window.removeEventListener('keydown', onKeyDown);
+		if (observer)
+			observer.disconnect();
 	});
 
 	return {
