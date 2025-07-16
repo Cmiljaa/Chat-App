@@ -3,6 +3,7 @@ import type { User } from "../../interfaces/user";
 import type { Message } from "../../interfaces/message";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
 import { getChatMessages, sendMessage } from "../../firebase/services/messageService";
+import showToast from "../../ToastNotifications";
 
 export default function useChatMessages(user: ComputedRef<User>, route: RouteLocationNormalizedLoaded){
 
@@ -13,13 +14,26 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 	const chatMessages: Ref<Message[]> = ref([]);
 	const isLoading: Ref<boolean> = ref<boolean>(true);
 	const chatContainer = ref<HTMLElement | null>(null);
+	let observer: MutationObserver;
 
 	const handleSendingMessage = async () => {
-		isDisabled.value = false;
+		const messageText = message.value.trim();
 
-		await sendMessage(user.value.id, message.value, chatId.value);
-		message.value = '';
+		if(messageText === ''){
+			showToast('error', "Your message can't be empty.");
+			return;
+		}
+
 		isDisabled.value = true;
+		
+		try {
+			await sendMessage(user.value.id, messageText, chatId.value);
+			message.value = '';
+		} catch(error){
+			console.log(error);
+		} finally {
+			isDisabled.value = false;
+		}
 	}
 
 	const fetchChatMessages = async () => {
