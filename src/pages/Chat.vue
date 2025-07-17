@@ -5,7 +5,7 @@
 				class="bg-[#0d0d0d] px-6 py-7 h-12 flex items-center border-l border-gray-700 sticky top-0 z-10 w-full shadow-sm">
 				<span class="text-xl font-semibold text-white">{{ otherUserNickname ?? 'Unknown' }}</span>
 			</div>
-			<div ref="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-2 flex flex-col">
+			<div ref="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-2 flex flex-col" v-chat-scroll>
 				<div v-for="chatMessage in chatMessages" :key="chatMessage.id" class="flex"
 					:class="chatMessage.senderId === user.id ? 'justify-end' : 'justify-start'">
 					<div :class="chatMessage.senderId === user.id
