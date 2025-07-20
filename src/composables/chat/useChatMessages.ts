@@ -14,6 +14,7 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 	const chatMessages: Ref<Message[]> = ref([]);
 	const isLoading: Ref<boolean> = ref<boolean>(true);
 	const chatContainer = ref<HTMLElement | null>(null);
+	const textarea: Ref<HTMLTextAreaElement | null> = ref(null)
 
 	const handleSendingMessage = async () => {
 		const messageText = message.value.trim();
@@ -42,6 +43,18 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		setTimeout(() => isLoading.value = false, 100);
 	};
 
+	const autoResize = () => {
+		if (!textarea.value) return
+
+		textarea.value.style.height = 'auto'
+
+		const maxHeight = 24 * 2 + 17.5
+		const scrollHeight = textarea.value.scrollHeight
+		const newHeight = Math.min(scrollHeight, maxHeight)
+
+		textarea.value.style.height = Math.max(newHeight, 24 + 17.5) + 'px'
+
+		textarea.value.style.overflowY = scrollHeight > maxHeight ? 'auto' : 'hidden'
 	}
 
 	watch(message, () => {
@@ -67,5 +80,6 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		otherUserNickname,
 		isDisabled,
 		chatContainer,
+		autoResize
 	}
 }
