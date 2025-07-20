@@ -42,10 +42,6 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		setTimeout(() => isLoading.value = false, 100);
 	};
 
-	const scrollToBottom = () => {
-		if (chatContainer.value) {
-			chatContainer.value.scrollTop = chatContainer.value.scrollHeight
-		}
 	}
 
 	watch(message, () => {
@@ -58,19 +54,9 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		}
 	});
 
-	const onKeyDown = async (event: KeyboardEvent): Promise<void> => {
-		if (event.key === 'Enter' && message.value.trim() != '') {
-			await handleSendingMessage();
-		}
-	};
-
 	onMounted(async (): Promise<void> => {
 		await fetchChatMessages();
-		window.addEventListener('keydown', onKeyDown);
-	});
-
-	onUnmounted((): void => {
-		window.removeEventListener('keydown', onKeyDown);
+		autoResize();
 	});
 
 	return {
@@ -81,6 +67,5 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		otherUserNickname,
 		isDisabled,
 		chatContainer,
-		scrollToBottom
 	}
 }
