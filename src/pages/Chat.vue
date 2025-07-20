@@ -18,8 +18,11 @@
 
 			<div class="p-3 bg-white">
 				<div class="flex items-center gap-2">
-					<input type="text" placeholder="Send message" v-model="message"
-						class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+					<textarea v-model="message" placeholder="Send message" rows="1" ref="textarea" @input="autoResize"
+						@keydown.enter.exact.prevent="handleSendingMessage"
+						class="w-full resize-none px-4 py-3 border border-gray-300 rounded-tl-lg rounded-bl-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+			Send Message
+		</textarea>
 					<button @click="handleSendingMessage" :disabled="isDisabled"
 						:class="['px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer', { 'bg-gray-400 ': isDisabled }]">
 						Send
@@ -42,8 +45,5 @@ import useChatMessages from '../composables/chat/useChatMessages';
 const route = useRoute();
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
 
-const { chatContainer, isLoading, chatMessages, message, handleSendingMessage, isDisabled, otherUserNickname } = useChatMessages(user, route);
-
-
-
+const { chatContainer, isLoading, chatMessages, message, handleSendingMessage, isDisabled, otherUserNickname, autoResize } = useChatMessages(user, route);
 </script>
