@@ -5,7 +5,8 @@
 				class="bg-[#0d0d0d] px-6 py-7 h-12 flex items-center border-l border-gray-700 sticky top-0 z-10 w-full shadow-sm">
 				<span class="text-xl font-semibold text-white">{{ otherUserNickname ?? 'Unknown' }}</span>
 			</div>
-			<div ref="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-2 flex flex-col" v-chat-scroll>
+			<div ref="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-2 flex flex-col"
+				v-chat-scroll="{ enabled: isScrollEnabled }">
 				<div v-for="chatMessage in chatMessages" :key="chatMessage.id" class="flex group"
 					:class="chatMessage.senderId === user.id ? 'justify-end' : 'justify-start'">
 					<template v-if="chatMessage.senderId === user.id">
@@ -36,8 +37,8 @@
 
 			<div class="p-3 bg-white">
 				<div class="flex items-center gap-2">
-					<textarea v-model="message" placeholder="Send message" rows="1" ref="textarea" @input="autoResize"
-						@keydown.enter.exact.prevent="handleSendingMessage"
+					<textarea v-model="message" placeholder="Send message" rows="1" ref="textarea"
+						@input="resizeTextArea" @keydown.enter.exact.prevent="handleSendingMessage"
 						class="w-full resize-none px-4 py-3 border border-gray-300 rounded-tl-lg rounded-bl-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
 			Send Message
 		</textarea>
@@ -63,6 +64,6 @@ import useChatMessages from '../composables/chat/useChatMessages';
 
 const route = useRoute();
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
+const { chatContainer, isLoading, chatMessages, message, handleSendingMessage, isDisabled, otherUserNickname, resizeTextArea, isScrollEnabled } = useChatMessages(user, route);
 
-const { chatContainer, isLoading, chatMessages, message, handleSendingMessage, isDisabled, otherUserNickname, autoResize } = useChatMessages(user, route);
 </script>
