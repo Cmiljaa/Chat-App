@@ -1,4 +1,4 @@
-import { computed, onMounted, onUnmounted, ref, watch, type ComputedRef, type Ref } from "vue";
+import { computed, onMounted, ref, watch, type ComputedRef, type Ref } from "vue";
 import type { User } from "../../interfaces/user";
 import type { Message } from "../../interfaces/message";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
@@ -8,17 +8,19 @@ import showToast from "../../ToastNotifications";
 export default function useChatMessages(user: ComputedRef<User>, route: RouteLocationNormalizedLoaded){
 
 	const message: Ref<string> = ref('');
-	const isDisabled: Ref<boolean> = ref(true);
 	const chatId: Ref<string> = computed(() => route.params.chatId as string);
 	const otherUserNickname: Ref<string> = computed(() => route.query.nickname as string);
 	const chatMessages: Ref<Message[]> = ref([]);
-	const isLoading: Ref<boolean> = ref<boolean>(true);
 	const chatContainer = ref<HTMLElement | null>(null);
-	const textarea: Ref<HTMLTextAreaElement | null> = ref(null)
+	const textarea: Ref<HTMLTextAreaElement | null> = ref(null);
+	const isLoading: Ref<boolean> = ref<boolean>(true);
+	const isDisabled: Ref<boolean> = ref(true);
+	const isScrollEnabled: Ref<boolean> = ref<boolean>(true);
 
 	const handleSendingMessage = async () => {
 		const messageText = message.value.trim();
 		message.value = '';
+		isScrollEnabled.value = true;
 
 		if(messageText === ''){
 			showToast('error', "Your message can't be empty.");
@@ -33,17 +35,21 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 			console.log(error);
 		} finally {
 			isDisabled.value = false;
+			setTimeout(() => {
+				isScrollEnabled.value = false;
+			}, 1000);
 		}
 	}
 
 	const fetchChatMessages = async () => {
 		isLoading.value = true;
+		isScrollEnabled.value = true;
 		chatMessages.value = [];
 		await getChatMessages(chatId.value, chatMessages);
 		setTimeout(() => isLoading.value = false, 100);
 	};
 
-	const autoResize = () => {
+	const resizeTextArea = () => {
 		if (!textarea.value) return
 
 		textarea.value.style.height = 'auto'
@@ -69,7 +75,10 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 
 	onMounted(async (): Promise<void> => {
 		await fetchChatMessages();
-		autoResize();
+		setTimeout(() => {
+			isScrollEnabled.value = false;
+		}, 1000);
+		resizeTextArea();
 	});
 
 	return {
@@ -80,6 +89,7 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		otherUserNickname,
 		isDisabled,
 		chatContainer,
-		autoResize
+		resizeTextArea,
+		isScrollEnabled
 	}
 }
