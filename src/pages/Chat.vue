@@ -10,29 +10,29 @@
 				<div v-for="chatMessage in chatMessages" :key="chatMessage.id" class="flex group"
 					:class="chatMessage.senderId === user.id ? 'justify-end' : 'justify-start'">
 					<template v-if="chatMessage.senderId === user.id">
-						<div class="relative flex items-start">
-							<span class="p-2 text-base cursor-pointer opacity-0 group-hover:opacity-100 relative"
-								@click="">⋯</span>
-							<div class="flex justify-end">
-								<div
-									class="p-2 max-w-2xl break-words bg-blue-500 rounded-bl-lg rounded-tr-lg rounded-tl-lg text-white">
-									{{ chatMessage.text }}
-								</div>
+						<div class="relative flex items-center">
+							<span @click="openModal(chatMessage)"
+								class="p-2 text-base cursor-pointer opacity-0 group-hover:opacity-100 relative">⋯</span>
+							<div
+								class="p-2 max-w-2xl break-words bg-blue-500 rounded-bl-lg rounded-tr-lg rounded-tl-lg text-white">
+								{{ chatMessage.text }}
 							</div>
 						</div>
 					</template>
 
 					<template v-else>
-						<div class="relative flex items-start">
+						<div class="relative flex items-center">
 							<span
 								class="p-2 max-w-2xl break-words bg-gray-200 text-gray-900 rounded-br-lg rounded-tr-lg rounded-tl-lg shadow-sm">
 								{{ chatMessage.text }}
 							</span>
-							<span class="p-2 text-base cursor-pointer opacity-0 group-hover:opacity-100">⋯</span>
+							<span @click="openModal(chatMessage)"
+								class="p-2 text-base cursor-pointer opacity-0 group-hover:opacity-100 relative">⋯</span>
 						</div>
 					</template>
 
 				</div>
+
 			</div>
 
 			<div class="p-3 bg-white">
@@ -43,27 +43,37 @@
 			Send Message
 		</textarea>
 					<button @click="handleSendingMessage" :disabled="isDisabled"
-						:class="['px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer', { 'bg-gray-400 ': isDisabled }]">
 						:class="['px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-lg transition cursor-pointer', { 'bg-gray-400 ': isDisabled }]">
 						Send
 					</button>
 				</div>
 			</div>
+			<MessageActionsModal :visible="isModalVisible" :message="selectedMessage" />
 		</div>
+
 		<Spinner v-else wrapperClass="flex flex-1 justify-center items-center" />
 	</div>
 </template>
 
 <script setup lang="ts">
-import { type ComputedRef } from 'vue';
+import { ref, type ComputedRef } from 'vue';
 import useCurrentUser from '../composables/auth/useCurrentUser';
 import type { User } from '../interfaces/user';
 import { useRoute } from 'vue-router';
 import Spinner from '../components/ui/Spinner.vue';
 import useChatMessages from '../composables/chat/useChatMessages';
+import MessageActionsModal from '../components/MessageActionsModal.vue';
+import type { Message } from '../interfaces/message';
 
 const route = useRoute();
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
 const { chatContainer, isLoading, chatMessages, message, handleSendingMessage, isDisabled, otherUserNickname, resizeTextArea, isScrollEnabled } = useChatMessages(user, route);
 
+const isModalVisible = ref(false);
+const selectedMessage = ref<Message | null>(null);
+
+function openModal(message: Message) {
+	selectedMessage.value = message;
+	isModalVisible.value = true;
+}
 </script>
