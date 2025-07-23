@@ -48,7 +48,8 @@
 					</button>
 				</div>
 			</div>
-			<MessageActionsModal :visible="isModalVisible" :message="selectedMessage" />
+			<MessageActionsModal :visible="isModalVisible" :message="selectedMessage" @copy-message="copyMessage"
+				@delete-message="deleteMessage" @close-modal="closeModal" />
 		</div>
 
 		<Spinner v-else wrapperClass="flex flex-1 justify-center items-center" />
@@ -56,24 +57,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, type ComputedRef } from 'vue';
+import { type ComputedRef } from 'vue';
 import useCurrentUser from '../composables/auth/useCurrentUser';
 import type { User } from '../interfaces/user';
 import { useRoute } from 'vue-router';
 import Spinner from '../components/ui/Spinner.vue';
 import useChatMessages from '../composables/chat/useChatMessages';
 import MessageActionsModal from '../components/MessageActionsModal.vue';
-import type { Message } from '../interfaces/message';
+import useMessageActionsModal from '../composables/messages/useMessageActionsModal';
 
 const route = useRoute();
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
 const { chatContainer, isLoading, chatMessages, message, handleSendingMessage, isDisabled, otherUserNickname, resizeTextArea, isScrollEnabled } = useChatMessages(user, route);
 
-const isModalVisible = ref(false);
-const selectedMessage = ref<Message | null>(null);
+const { isModalVisible, selectedMessage, openModal, closeModal, copyMessage, deleteMessage } = useMessageActionsModal(isScrollEnabled.value);
 
-function openModal(message: Message) {
-	selectedMessage.value = message;
-	isModalVisible.value = true;
-}
 </script>
