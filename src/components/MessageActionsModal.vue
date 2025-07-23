@@ -19,6 +19,7 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import type { Message } from '../interfaces/message';
 
 const props = defineProps<{
