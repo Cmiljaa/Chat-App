@@ -13,7 +13,7 @@
 					@click="emits('copy-message')">
 					📋 <span>Copy</span>
 				</li>
-				<li class="py-2 hover:bg-red-100 text-red-600 cursor-pointer flex items-center gap-2">
+				<li v-if="message?.senderId === user.id"
 					class="py-2 hover:bg-red-100 text-red-600 cursor-pointer flex items-center gap-2"
 					@click="emits('delete-message')">
 					🗑️ <span>Delete</span>
@@ -27,11 +27,14 @@
 import dayjs from 'dayjs';
 import type { Message } from '../interfaces/message';
 import type { ComputedRef } from 'vue';
+import type { User } from '../interfaces/user';
+import useCurrentUser from '../composables/auth/useCurrentUser';
 
 const props = defineProps<{
 	message: Message | null,
 	visible: boolean
 }>();
+const { user }: { user: ComputedRef<User> } = useCurrentUser();
 
 const emits = defineEmits(['copy-message', 'delete-message', 'close-modal']);
 
