@@ -1,4 +1,4 @@
-import { collection, doc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, setDoc, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import showToast from "../../ToastNotifications";
 import type { Message } from "../../interfaces/message";
 import type { Ref } from "vue";
@@ -22,10 +22,10 @@ export const sendMessage = async (senderId: string, messageText: string, chatId:
 
 export const getChatMessages = async (chatId: string, messages: Ref<Message[]>): Promise<void> => {
 
-const db = getFirestore();
-const messagesRef = collection(db, 'messages');
+	const db = getFirestore();
+	const messagesRef = collection(db, 'messages');
 
-const messagesQuery = query(messagesRef, where('chatId', '==', chatId), orderBy('createdAt', 'asc'));
+	const messagesQuery = query(messagesRef, where('chatId', '==', chatId), orderBy('createdAt', 'asc'));
 
 	try {
 
@@ -63,3 +63,15 @@ const messagesQuery = query(messagesRef, where('chatId', '==', chatId), orderBy(
 		console.error(error);
 	}
 };
+
+export const deleteMessage = async (message: Message): Promise<void> => {
+	const db = getFirestore();
+
+	try {
+		await deleteDoc(doc(db, 'messages', message.id));
+		showToast('success', 'Message successfully deleted');
+	} catch (error) {
+		console.error('Failed to delete the message:', error);
+		showToast('error', 'The message is not deleted');
+	}
+}

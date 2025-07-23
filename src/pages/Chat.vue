@@ -49,7 +49,7 @@
 				</div>
 			</div>
 			<MessageActionsModal :visible="isModalVisible" :message="selectedMessage" @copy-message="copyMessage"
-				@delete-message="deleteMessage" @close-modal="closeModal" />
+				@delete-message="handleDeleteMessage" @close-modal="closeModal" />
 		</div>
 
 		<Spinner v-else wrapperClass="flex flex-1 justify-center items-center" />
@@ -68,8 +68,8 @@ import useMessageActionsModal from '../composables/messages/useMessageActionsMod
 
 const route = useRoute();
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
-const { chatContainer, isLoading, chatMessages, message, handleSendingMessage, isDisabled, otherUserNickname, resizeTextArea, isScrollEnabled } = useChatMessages(user, route);
+const { chatContainer, isLoading, chatMessages, message, handleSendMessage, isDisabled, otherUserNickname, resizeTextArea, isScrollEnabled } = useChatMessages(user, route);
 
-const { isModalVisible, selectedMessage, openModal, closeModal, copyMessage, deleteMessage } = useMessageActionsModal(isScrollEnabled.value);
+const { isModalVisible, selectedMessage, openModal, closeModal, copyMessage, handleDeleteMessage } = useMessageActionsModal(isScrollEnabled.value);
 
 </script>
