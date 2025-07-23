@@ -17,7 +17,7 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 	const isDisabled: Ref<boolean> = ref(true);
 	const isScrollEnabled: Ref<boolean> = ref<boolean>(true);
 
-	const handleSendingMessage = async () => {
+	const handleSendMessage = async () => {
 		const messageText = message.value.trim();
 		message.value = '';
 		isScrollEnabled.value = true;
@@ -85,7 +85,7 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		isLoading,
 		chatMessages,
 		message,
-		handleSendingMessage,
+		handleSendMessage,
 		otherUserNickname,
 		isDisabled,
 		chatContainer,

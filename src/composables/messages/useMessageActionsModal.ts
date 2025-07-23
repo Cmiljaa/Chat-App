@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import type { Message } from "../../interfaces/message";
+import { deleteMessage } from "../../firebase/services/messageService";
 
 export default function useMessageActionsModal(isScrollEnabled: boolean){
 	const isModalVisible = ref(false);
@@ -26,9 +27,9 @@ export default function useMessageActionsModal(isScrollEnabled: boolean){
 		}
 	}
 
-	const deleteMessage = () => {
+	const handleDeleteMessage  = async () => {
 		if (selectedMessage.value) {
-			console.log('Delete message ', selectedMessage.value.id);
+			await deleteMessage(selectedMessage.value);
 			closeModal();
 		}
 	}
@@ -39,6 +40,6 @@ export default function useMessageActionsModal(isScrollEnabled: boolean){
 		openModal,
 		closeModal,
 		copyMessage,
-		deleteMessage
+		handleDeleteMessage
 	}
 };
