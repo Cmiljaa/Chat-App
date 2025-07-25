@@ -11,7 +11,7 @@ export default function useChatActions(user: ComputedRef<User>){
 
 	let isLoading = ref<boolean>(true);
 	let chats: Ref<Chat[]> = ref([]);
-	const isModalOpen: Ref<boolean> = ref(false);
+	const isModalOpen = ref(false);
 
 	const handleChatCreation = (chat: Chat | string): void => {
 		if (typeof chat === 'object') {
@@ -26,12 +26,12 @@ export default function useChatActions(user: ComputedRef<User>){
 
 		if (!result) {
 			const newChat: Chat = await createChat(userId1, userNickname1, userId2, userNickname2);
-			openChat(newChat.id, router);
+			openChat(newChat.id, router, userNickname2);
 
 			return newChat;
 		}
 		else {
-			openChat(result, router);
+			openChat(result, router, userNickname2);
 			return result;
 		}
 	}

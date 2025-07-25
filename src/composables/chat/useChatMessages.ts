@@ -7,17 +7,17 @@ import showToast from "../../ToastNotifications";
 
 export default function useChatMessages(user: ComputedRef<User>, route: RouteLocationNormalizedLoaded){
 
-	const message: Ref<string> = ref('');
-	const chatId: Ref<string> = computed(() => route.params.chatId as string);
-	const otherUserNickname: Ref<string> = computed(() => route.query.nickname as string);
+	const message = ref('');
+	const chatId = computed(() => route.params.chatId as string);
+	const otherUserNickname = computed(() => route.query.nickname as string);
 	const chatMessages: Ref<Message[]> = ref([]);
 	const chatContainer = ref<HTMLElement | null>(null);
 	const textarea: Ref<HTMLTextAreaElement | null> = ref(null);
-	const isLoading: Ref<boolean> = ref<boolean>(true);
-	const isDisabled: Ref<boolean> = ref(true);
-	const isScrollEnabled: Ref<boolean> = ref<boolean>(true);
+	const isLoading = ref(true);
+	const isDisabled = ref(true);
+	const isScrollEnabled = ref(true);
 
-	const handleSendMessage = async () => {
+	const handleSendMessage = async (): Promise<void> => {
 		const messageText = message.value.trim();
 		message.value = '';
 		isScrollEnabled.value = true;
@@ -41,7 +41,7 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		}
 	}
 
-	const fetchChatMessages = async () => {
+	const fetchChatMessages = async (): Promise<void> => {
 		isLoading.value = true;
 		isScrollEnabled.value = true;
 		chatMessages.value = [];
@@ -49,7 +49,7 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		setTimeout(() => isLoading.value = false, 100);
 	};
 
-	const resizeTextArea = () => {
+	const resizeTextArea = (): void => {
 		if (!textarea.value) return
 
 		textarea.value.style.height = 'auto'
@@ -63,11 +63,11 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		textarea.value.style.overflowY = scrollHeight > maxHeight ? 'auto' : 'hidden'
 	}
 
-	watch(message, () => {
+	watch(message, (): void => {
 		isDisabled.value = message.value.trim() === '';
 	});
 
-	watch(() => route.params.chatId, async (newChatId, oldChatId) => {
+	watch(() => route.params.chatId, async (newChatId, oldChatId): Promise<void> => {
 		if (newChatId !== oldChatId) {
 			await fetchChatMessages();
 		}

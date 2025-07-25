@@ -6,13 +6,13 @@ export default function useMessageActionsModal(isScrollEnabled: boolean){
 	const isModalVisible = ref(false);
 	const selectedMessage = ref<Message | null>(null);
 
-	const openModal = (message: Message) => {
+	const openModal = (message: Message): void => {
 		isScrollEnabled = false;
 		selectedMessage.value = message;
 		isModalVisible.value = true;
 	}
 
-	const closeModal = () => {
+	const closeModal = (): void => {
 		isModalVisible.value = false;
 		selectedMessage.value = null;
 		setTimeout(() => {
@@ -20,14 +20,14 @@ export default function useMessageActionsModal(isScrollEnabled: boolean){
 		}, 1000);
 	}
 
-	const copyMessage = () => {
+	const copyMessage = (): void => {
 		if (selectedMessage.value) {
 			navigator.clipboard.writeText(selectedMessage.value.text);
 			closeModal();
 		}
 	}
 
-	const handleDeleteMessage  = async () => {
+	const handleDeleteMessage  = async (): Promise<void> => {
 		if (selectedMessage.value) {
 			await deleteMessage(selectedMessage.value);
 			closeModal();

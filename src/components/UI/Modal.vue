@@ -18,7 +18,7 @@
 defineProps<{ isOpen: boolean }>();
 const emit = defineEmits(['update:isOpen']);
 
-const closeModal = () => {
+const closeModal = (): void => {
 	emit('update:isOpen', false);
 };
 </script>

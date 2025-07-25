@@ -32,7 +32,7 @@ defineProps<{
 	isModalOpen: boolean
 }>();
 
-const nickname: Ref<string> = ref('');
+const nickname = ref('');
 let searchedUsers: Ref<User[]> = ref([]);
 const router = useRouter();
 const { user }: { user: ComputedRef<User> } = useCurrentUser();

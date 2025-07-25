@@ -38,11 +38,11 @@
 			<div class="p-3 bg-white">
 				<div class="flex items-center gap-2">
 					<textarea v-model="message" placeholder="Send message" rows="1" ref="textarea"
-						@input="resizeTextArea" @keydown.enter.exact.prevent="handleSendingMessage"
+						@input="resizeTextArea" @keydown.enter.exact.prevent="handleSendMessage"
 						class="w-full resize-none px-4 py-3 border border-gray-300 rounded-tl-lg rounded-bl-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
 			Send Message
 		</textarea>
-					<button @click="handleSendingMessage" :disabled="isDisabled"
+					<button @click="handleSendMessage" :disabled="isDisabled"
 						:class="['px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-lg transition cursor-pointer', { 'bg-gray-400 ': isDisabled }]">
 						Send
 					</button>
