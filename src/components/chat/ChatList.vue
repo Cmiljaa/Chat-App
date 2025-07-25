@@ -25,7 +25,7 @@ const router = useRouter();
 
 const { openChat, getOtherMemberNickname } = useChatList();
 
-const handleOpenChat = (chatId: string, nickname: string) => {
+const handleOpenChat = (chatId: string, nickname: string): void => {
 	openChat(chatId, router, nickname);
 }
 

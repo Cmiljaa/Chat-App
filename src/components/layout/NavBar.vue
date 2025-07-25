@@ -64,9 +64,9 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import SignOut from '../auth/SignOut.vue';
 import Spinner from '../ui/Spinner.vue';
 
-let isOpen = ref<boolean>(false);
-const isLoggedIn = ref<boolean>(false);
-const isLoading = ref<boolean>(true);
+let isOpen = ref(false);
+const isLoggedIn = ref(false);
+const isLoading = ref(true);
 const auth = getAuth();
 
 onMounted(async (): Promise<void> => {
@@ -76,6 +76,6 @@ onMounted(async (): Promise<void> => {
 	});
 });
 
-const closeMenu = () => isOpen.value = false;
+const closeMenu = (): void => { isOpen.value = false };
 
 </script>

@@ -13,13 +13,15 @@ export const useUserStore = defineStore('userStore', {
 		}
 	},
 	actions: {
-		setUser(user: User | null){
+		setUser(user: User | null): void
+		{
 			if(user)
 				this.user = user;
 			else
 				return;
 		},
-		removeUser(){
+		removeUser(): void
+		{
 			this.user = null;
 		}
 	}
