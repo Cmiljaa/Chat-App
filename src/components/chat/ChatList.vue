@@ -15,6 +15,7 @@
 import { useRouter } from 'vue-router';
 import type { Chat } from '../../interfaces/chat';
 import useChatList from '../../composables/chat/useChatList';
+import useOtherParticipant from '../../composables/chat/useOtherParticipant';
 
 defineProps<{
 	chats: Chat[],
@@ -23,7 +24,8 @@ defineProps<{
 
 const router = useRouter();
 
-const { openChat, getOtherMemberNickname } = useChatList();
+const { openChat } = useChatList();
+const { getOtherMemberNickname } = useOtherParticipant();
 
 const handleOpenChat = (chatId: string, nickname: string): void => {
 	openChat(chatId, router, nickname);
