@@ -5,7 +5,8 @@ export interface Chat{
 	members: {
 		[userId: string]: {
 			nickname: string,
-			id: string
+			id: string,
+			isTyping: boolean
 		}
 	}
 	createdAt: Timestamp
