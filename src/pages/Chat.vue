@@ -34,7 +34,9 @@
 				</div>
 
 			</div>
-
+			<div class="pl-4" v-if="isOtherMemberTyping(chat?.members ?? null, user.id)">
+				Typing...
+			</div>
 			<div class="p-3 bg-white">
 				<div class="flex items-center gap-2">
 					<textarea v-model="message" placeholder="Send message" rows="1" ref="textarea"
@@ -65,10 +67,12 @@ import Spinner from '../components/ui/Spinner.vue';
 import useChatMessages from '../composables/chat/useChatMessages';
 import MessageActionsModal from '../components/MessageActionsModal.vue';
 import useMessageActionsModal from '../composables/messages/useMessageActionsModal';
+import useOtherParticipant from '../composables/chat/useOtherParticipant';
 
 const route = useRoute();
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
-const { chatContainer, isLoading, chatMessages, message, handleSendMessage, isDisabled, otherUserNickname, resizeTextArea, isScrollEnabled } = useChatMessages(user, route);
+const { isOtherMemberTyping } = useOtherParticipant();
+const { chat, chatContainer, isLoading, chatMessages, message, handleSendMessage, isDisabled, otherUserNickname, resizeTextArea, isScrollEnabled } = useChatMessages(user, route);
 
 const { isModalVisible, selectedMessage, openModal, closeModal, copyMessage, handleDeleteMessage } = useMessageActionsModal(isScrollEnabled.value);
 
