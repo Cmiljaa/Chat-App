@@ -1,5 +1,6 @@
+import type { Ref } from "vue";
 import type { Chat } from "../../interfaces/chat";
-import { collection, doc, getDocs, getFirestore, serverTimestamp, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, getFirestore, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 
 export const findChatBetweenUsers = async (userId1: string, userId2: string): Promise<string | null> => {
 	const db = getFirestore();
@@ -37,11 +38,13 @@ export const createChat = async (userId1: string, userNickname1: string, userId2
 		members: {
 			[userId1]: {
 				id: userId1,
-				nickname: userNickname1
+				nickname: userNickname1,
+				isTyping: false
 			},
 			[userId2]: {
 				id: userId2,
-				nickname: userNickname2
+				nickname: userNickname2,
+				isTyping: false
 			},
 		}
 	};
@@ -77,5 +80,37 @@ export const getUserChats = async (userId: string): Promise<Chat[]> => {
 	} catch (error) {
 		console.error("Error while fetching the chats :", error);
 		return [];
+	}
+};
+
+export const getChatById = async (chatId: string, chat: Ref<Chat | null>): Promise<void> => {
+	const db = getFirestore();
+	const chatRef = doc(db, 'chats', chatId);
+
+	try {
+		onSnapshot(chatRef, (snapshot) => {
+			if (!snapshot.exists()) {
+				chat.value = null;
+			} else {
+				chat.value = snapshot.data() as Chat;
+			}
+			
+		});
+		chat.value = null;
+	} catch (error) {
+		console.error(error);
+		chat.value = null;
+	}
+};
+
+export const setUserTyping = async (chatId: string, userId: string, typing: boolean): Promise<void> => {
+	const db = getFirestore();
+	const chatRef = doc(db, 'chats', chatId);
+	try {
+		await updateDoc(chatRef, {
+			[`members.${userId}.isTyping`]: typing
+		});
+	} catch (error) {
+		console.error("Error while updating the chats :", error);
 	}
 };
