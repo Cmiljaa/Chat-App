@@ -4,6 +4,8 @@ import type { Message } from "../../interfaces/message";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
 import { getChatMessages, sendMessage } from "../../firebase/services/messageService";
 import showToast from "../../ToastNotifications";
+import { getChatById, setUserTyping } from "../../firebase/services/chatService";
+import { type Chat } from "../../interfaces/chat";
 
 export default function useChatMessages(user: ComputedRef<User>, route: RouteLocationNormalizedLoaded){
 
@@ -16,6 +18,7 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 	const isLoading = ref(true);
 	const isDisabled = ref(true);
 	const isScrollEnabled = ref(true);
+	const chat = ref<Chat | null>(null);
 
 	const handleSendMessage = async (): Promise<void> => {
 		const messageText = message.value.trim();
@@ -26,15 +29,13 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 			showToast('error', "Your message can't be empty.");
 			return;
 		}
-
-		isDisabled.value = true;
 		
 		try {
 			await sendMessage(user.value.id, messageText, chatId.value);
 		} catch(error){
 			console.log(error);
 		} finally {
-			isDisabled.value = false;
+			isDisabled.value = true;
 			setTimeout(() => {
 				isScrollEnabled.value = false;
 			}, 1000);
@@ -43,7 +44,6 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 
 	const fetchChatMessages = async (): Promise<void> => {
 		isLoading.value = true;
-		isScrollEnabled.value = true;
 		chatMessages.value = [];
 		await getChatMessages(chatId.value, chatMessages);
 		setTimeout(() => isLoading.value = false, 100);
@@ -63,8 +63,14 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		textarea.value.style.overflowY = scrollHeight > maxHeight ? 'auto' : 'hidden'
 	}
 
-	watch(message, (): void => {
-		isDisabled.value = message.value.trim() === '';
+	watch(message, async () => {
+		if(message.value.trim() === ''){
+			isDisabled.value = true;
+		}
+		else{
+			isDisabled.value = false;
+		}
+		await setUserTyping(chatId.value, user.value.id, !isDisabled.value);
 	});
 
 	watch(() => route.params.chatId, async (newChatId, oldChatId): Promise<void> => {
@@ -73,8 +79,13 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		}
 	});
 
+	watch(chatMessages, () => {
+		isScrollEnabled.value = true;
+	},{ deep: true });
+
 	onMounted(async (): Promise<void> => {
 		await fetchChatMessages();
+		await getChatById(chatId.value, chat);
 		setTimeout(() => {
 			isScrollEnabled.value = false;
 		}, 1000);
@@ -90,6 +101,7 @@ export default function useChatMessages(user: ComputedRef<User>, route: RouteLoc
 		isDisabled,
 		chatContainer,
 		resizeTextArea,
-		isScrollEnabled
+		isScrollEnabled,
+		chat
 	}
 }
