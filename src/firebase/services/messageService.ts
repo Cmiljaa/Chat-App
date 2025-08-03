@@ -1,9 +1,11 @@
-import { collection, deleteDoc, doc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, setDoc, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import showToast from "../../ToastNotifications";
 import type { Message } from "../../interfaces/message";
 import type { Ref } from "vue";
 
-export const sendMessage = async (senderId: string, messageText: string, chatId: string): Promise<void> => {
+let unsubscribeMessages: (() => void) | null = null;
+
+export const sendMessage = async (senderId: string, messageText: string, chatId: string): Promise<string | null> => {
 	const db = getFirestore();
 	try {
 		const newMessageRef = doc(collection(db, 'messages')); 
@@ -14,9 +16,12 @@ export const sendMessage = async (senderId: string, messageText: string, chatId:
 			chatId,
 			createdAt: serverTimestamp()
 		}, { merge: true });
+
+		return newMessageRef.id;
 	} catch (error) {
 		console.error('Failed to send the message:', error);
 		showToast('error', 'The message is not delivered');
+		return null;
 	}
 }
 
@@ -29,7 +34,11 @@ export const getChatMessages = async (chatId: string, messages: Ref<Message[]>):
 
 	try {
 
-		onSnapshot(messagesQuery, (querySnapshot) => {
+		if (unsubscribeMessages) {
+			unsubscribeMessages();
+		}
+
+		unsubscribeMessages = onSnapshot(messagesQuery, (querySnapshot) => {
 			querySnapshot.docChanges().forEach((change) => {
 				const doc = change.doc
 				const data = doc.data() as Message
@@ -64,6 +73,23 @@ export const getChatMessages = async (chatId: string, messages: Ref<Message[]>):
 	}
 };
 
+export const getMessage = async (messageId: string): Promise<Message | null> => {
+	const db = getFirestore();
+	const userRef = doc(db, 'messages', messageId);
+	try {
+		const snapshot = await getDoc(userRef);
+		if(snapshot.exists()){
+			return snapshot.data() as Message;
+		} else{
+			console.log('No data available');
+			return null;
+		}
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+}
+
 export const deleteMessage = async (message: Message): Promise<void> => {
 	const db = getFirestore();
 
@@ -75,3 +101,10 @@ export const deleteMessage = async (message: Message): Promise<void> => {
 		showToast('error', 'The message is not deleted');
 	}
 }
+
+export const unsubscribeChatMessages = () => {
+  if (unsubscribeMessages) {
+    unsubscribeMessages();
+    unsubscribeMessages = null;
+  }
+};
