@@ -8,4 +8,5 @@ export interface Chat{
 		[userId: string]: MemberInfo
 	}
 	createdAt: Timestamp,
+	lastMessage: Message | null
 };

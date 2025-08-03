@@ -114,3 +114,29 @@ export const setUserTyping = async (chatId: string, userId: string, typing: bool
 		console.error("Error while updating the chats :", error);
 	}
 };
+
+export const setLastMessage = async (chatId: string, lastMessage: Message): Promise<void> => {
+	const db = getFirestore();
+	const chatRef = doc(db, 'chats', chatId);
+	try {
+		await updateDoc(chatRef, {
+			lastMessage: lastMessage
+		});
+	} catch (error) {
+		console.error("Error while updating the chat :", error);
+	}
+};
+
+export const unsubscribeChat = () => {
+	if (unsubscribeFromChat) {
+		unsubscribeFromChat();
+		unsubscribeFromChat = null;
+	}
+};
+
+export const unsubscribeUserChats = (): void => {
+  if (unsubscribeFromUserChats) {
+    unsubscribeFromUserChats();
+    unsubscribeFromUserChats = null;
+  }
+};
