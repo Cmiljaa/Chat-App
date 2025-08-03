@@ -1,3 +1,5 @@
+import type { MemberInfo } from "../../interfaces/memberInfo";
+
 export default function useOtherParticipant(){
 
 	const isOtherMemberTyping = (members: Record<string, MemberInfo> | null, excludeId: string) => {
@@ -6,11 +8,13 @@ export default function useOtherParticipant(){
 		return otherParticipant?.isTyping;
 	}
 
-	const getOtherMemberNickname = (members: Record<string, { id: string, nickname: string, isTyping: string }>, excludeId: string): string => {
-		const other = Object.values(members).find(member => member.id !== excludeId);
-		return other ? other.nickname : 'Unknown';
-	}
 	const getOtherMemberNickname = (members: Record<string, MemberInfo> | null | undefined,excludeId: string): string => {
+		if (!members || typeof excludeId !== 'string') return 'Unknown';
+
+		const otherMember = Object.values(members).find(member => member.id && member.id !== excludeId);
+
+		return otherMember?.nickname || 'Unknown';
+	};
 
 	return {
 		isOtherMemberTyping,
