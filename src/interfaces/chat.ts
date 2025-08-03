@@ -1,13 +1,11 @@
 import type { Timestamp } from "firebase/firestore"
+import type { Message } from "./message"
+import type { MemberInfo } from "./memberInfo"
 
 export interface Chat{
 	id: string,
 	members: {
-		[userId: string]: {
-			nickname: string,
-			id: string,
-			isTyping: boolean
-		}
+		[userId: string]: MemberInfo
 	}
-	createdAt: Timestamp
+	createdAt: Timestamp,
 };
