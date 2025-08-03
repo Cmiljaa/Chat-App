@@ -3,7 +3,9 @@
 		<div class="flex flex-col h-full" v-if="!isLoading">
 			<div
 				class="bg-[#0d0d0d] px-6 py-7 h-12 flex items-center border-l border-gray-700 sticky top-0 z-10 w-full shadow-sm">
-				<span class="text-xl font-semibold text-white">{{ otherUserNickname ?? 'Unknown' }}</span>
+				<span v-if="chat" class="text-xl font-semibold text-white">
+					{{ getOtherMemberNickname(chat.members, user.id) }}
+				</span>
 			</div>
 			<div ref="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-2 flex flex-col"
 				v-chat-scroll="{ enabled: isScrollEnabled }">
@@ -68,12 +70,18 @@ import useChatMessages from '../composables/chat/useChatMessages';
 import MessageActionsModal from '../components/MessageActionsModal.vue';
 import useMessageActionsModal from '../composables/messages/useMessageActionsModal';
 import useOtherParticipant from '../composables/chat/useOtherParticipant';
+import useSendMessage from '../composables/chat/useSendMessage';
+import useChatTextArea from '../composables/chat/useChatTextArea';
+import useTypingStatus from '../composables/chat/useTypingStatus';
 
 const route = useRoute();
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
-const { isOtherMemberTyping } = useOtherParticipant();
-const { chat, chatContainer, isLoading, chatMessages, message, handleSendMessage, isDisabled, otherUserNickname, resizeTextArea, isScrollEnabled } = useChatMessages(user, route);
 
+const { chat, isLoading, chatMessages, isScrollEnabled, chatId } = useChatMessages(route);
+const { message, handleSendMessage, isDisabled } = useSendMessage(user.value.id, isScrollEnabled, chatId);
 const { isModalVisible, selectedMessage, openModal, closeModal, copyMessage, handleDeleteMessage } = useMessageActionsModal(isScrollEnabled.value);
+const { isOtherMemberTyping, getOtherMemberNickname } = useOtherParticipant();
+useTypingStatus(message, chatId, user.value.id, isDisabled);
+const { resizeTextArea } = useChatTextArea();
 
 </script>
