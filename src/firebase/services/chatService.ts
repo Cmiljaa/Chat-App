@@ -1,6 +1,10 @@
 import type { Ref } from "vue";
 import type { Chat } from "../../interfaces/chat";
 import { collection, doc, getDocs, getFirestore, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import type { Message } from "../../interfaces/message";
+
+let unsubscribeFromChat: (() => void) | null = null;
+let unsubscribeFromUserChats: (() => void) | null = null;
 
 export const findChatBetweenUsers = async (userId1: string, userId2: string): Promise<string | null> => {
 	const db = getFirestore();
@@ -46,41 +50,48 @@ export const createChat = async (userId1: string, userNickname1: string, userId2
 				nickname: userNickname2,
 				isTyping: false
 			},
-		}
+		},
+		lastMessage: null
 	};
 	await setDoc(newChatRef, newChatData);
 	
 	return newChatData;
 };
 
-export const getUserChats = async (userId: string): Promise<Chat[]> => {
-	const db = getFirestore();
-	const chatsRef = collection(db, 'chats');
+export const getUserChats = async (userId: string, userChats: Ref<Chat[]>): Promise<void> => {
+  	const db = getFirestore();
+  	const chatsRef = collection(db, 'chats');
 
-	try {
-		const snapshot = await getDocs(chatsRef);
+  	try {
+    	if (unsubscribeFromUserChats) {
+    	  	unsubscribeFromUserChats();
+    	}
 
-		if (snapshot.empty) return [];
+		unsubscribeFromUserChats = onSnapshot(chatsRef, (snapshot) => {
 
-		const userChats: Chat[] = [];
+			const chats: Chat[] = [];
 
-		snapshot.forEach(docSnap => {
+			snapshot.forEach((docSnap) => {
 			const data = docSnap.data();
-
-			if (data.members && data.members[userId]) {
-				userChats.push({
-					id: docSnap.id,
-					members: data.members,
-					createdAt: data.createdAt
-				});
-			}
+				
+				if (data.members && data.members[userId]) {
+					chats.push({
+						id: docSnap.id,
+						members: data.members,
+						createdAt: data.createdAt,
+						lastMessage: data.lastMessage,
+					});
+				}
+			});
+			userChats.value = chats;
+			console.log('USER CHATOVI IZ CHAT SERVICEA');
+			console.log(userChats.value);
 		});
-
-		return userChats;
-	} catch (error) {
-		console.error("Error while fetching the chats :", error);
-		return [];
-	}
+		
+ 	} catch (error) {
+    	console.error('Error while fetching the chats:', error);
+   	 	userChats.value = [];
+  	}	
 };
 
 export const getChatById = async (chatId: string, chat: Ref<Chat | null>): Promise<void> => {
@@ -88,15 +99,13 @@ export const getChatById = async (chatId: string, chat: Ref<Chat | null>): Promi
 	const chatRef = doc(db, 'chats', chatId);
 
 	try {
-		onSnapshot(chatRef, (snapshot) => {
-			if (!snapshot.exists()) {
-				chat.value = null;
-			} else {
-				chat.value = snapshot.data() as Chat;
-			}
-			
+		if (unsubscribeFromChat) {
+			unsubscribeFromChat();
+		}
+
+		unsubscribeFromChat =  onSnapshot(chatRef, (snapshot) => {
+			chat.value = snapshot.data() as Chat;
 		});
-		chat.value = null;
 	} catch (error) {
 		console.error(error);
 		chat.value = null;
@@ -111,7 +120,7 @@ export const setUserTyping = async (chatId: string, userId: string, typing: bool
 			[`members.${userId}.isTyping`]: typing
 		});
 	} catch (error) {
-		console.error("Error while updating the chats :", error);
+		console.error("Error while updating the chat :", error);
 	}
 };
 
