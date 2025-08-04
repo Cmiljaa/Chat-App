@@ -1,5 +1,5 @@
 import { type Router } from "vue-router";
-import { createChat, findChatBetweenUsers, getUserChats } from "../../firebase/services/chatService";
+import { createChat, findChatBetweenUsers, getUserChats, unsubscribeUserChats } from "../../firebase/services/chatService";
 import type { Chat } from "../../interfaces/chat";
 import { onMounted, onUnmounted, ref, watch, type ComputedRef, type Ref } from 'vue';
 import type { User } from "../../interfaces/user";
@@ -36,25 +36,27 @@ export default function useChatActions(user: ComputedRef<User>){
 		}
 	}
 
-	watch(user, async (user): Promise<void> => {
-		if (user.id) {
-			chats.value = await getUserChats(user.id);
-			isLoading.value = false;
-		}
-	}, { immediate: true });
-
 	const onKeyDown = (event: KeyboardEvent): void => {
 		if (event.key === 'Escape') {
 			isModalOpen.value = false;
 		}
 	};
 
-	onMounted((): void => {
+	watch(chats, () => {
+		setTimeout(() => {
+			isLoading.value = false;
+		}, 300);
+	});
+
+	onMounted(async (): Promise<void> => {
 		window.addEventListener('keydown', onKeyDown);
+		await new Promise(resolve => setTimeout(resolve, 1000));
+		await getUserChats(user.value.id, chats);
 	});
 
 	onUnmounted((): void => {
 		window.removeEventListener('keydown', onKeyDown);
+		unsubscribeUserChats();
 	});
 
 	return {
