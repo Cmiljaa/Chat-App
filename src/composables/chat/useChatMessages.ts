@@ -1,8 +1,8 @@
-import { computed, onMounted, ref, watch, type Ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch, type Ref } from "vue";
 import type { Message } from "../../interfaces/message";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
-import { getChatMessages } from "../../firebase/services/messageService";
-import { getChatById } from "../../firebase/services/chatService";
+import { getChatMessages, unsubscribeChatMessages } from "../../firebase/services/messageService";
+import { getChatById, unsubscribeChat } from "../../firebase/services/chatService";
 import { type Chat } from "../../interfaces/chat";
 import useChatTextArea from "./useChatTextArea";
 
@@ -20,6 +20,7 @@ export default function useChatMessages(route: RouteLocationNormalizedLoaded){
 		isLoading.value = true;
 		chatMessages.value = [];
 		await getChatMessages(chatId.value, chatMessages);
+		await getChatById(chatId.value, chat);
 		setTimeout(() => isLoading.value = false, 100);
 	};
 
@@ -40,6 +41,11 @@ export default function useChatMessages(route: RouteLocationNormalizedLoaded){
 			isScrollEnabled.value = false;
 		}, 1000);
 		resizeTextArea();
+	});
+
+	onUnmounted((): void => {
+		unsubscribeChat();
+		unsubscribeChatMessages();
 	});
 
 	return {
