@@ -1,8 +1,9 @@
 import { ref, type Ref } from "vue";
 import showToast from "../../ToastNotifications";
-import { sendMessage } from "../../firebase/services/messageService";
+import { getMessage, sendMessage } from "../../firebase/services/messageService";
+import { setLastMessage } from "../../firebase/services/chatService";
 
-export default function useSendMessage(userId: string, isScrollEnabled: Ref<boolean>, chatId: string){
+export default function useSendMessage(userId: string, isScrollEnabled: Ref<boolean>, chatId: Ref<string>){
 
 	const message = ref('');
 	const isDisabled = ref(true);
@@ -18,7 +19,14 @@ export default function useSendMessage(userId: string, isScrollEnabled: Ref<bool
 		}
 		
 		try {
-			await sendMessage(userId, messageText, chatId);
+			const newMessageId = await sendMessage(userId, messageText, chatId.value);
+			if(!newMessageId) return;
+
+			const newMessage = await getMessage(newMessageId);
+			if(!newMessage) return;
+
+			await setLastMessage(chatId.value, newMessage);
+			
 		} catch(error){
 			console.log(error);
 		} finally {
