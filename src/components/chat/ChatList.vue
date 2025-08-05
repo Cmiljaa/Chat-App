@@ -6,8 +6,16 @@
 			<p class="text-base font-semibold text-white truncate">
 				{{ getOtherMemberNickname(chat.members, userId) }}
 			</p>
-			<p class="text-sm text-gray-400 truncate">
-				{{ chat.lastMessage?.text || 'No messages yet' }}
+			<p v-if="chat.lastMessage" class="text-sm text-gray-400 truncate">
+				<span v-if="chat.lastMessage.senderId === userId">You: </span>
+				<span>{{ chat.lastMessage.text }}</span>
+				<span>&nbsp;·
+					{{ dayjs(chat.lastMessage.createdAt.seconds * 1000 +
+						Math.floor(chat.lastMessage.createdAt.nanoseconds / 1_000_000)).fromNow() }}
+				</span>
+			</p>
+			<p v-else class="text-sm text-gray-400 truncate">
+				No messages yet
 			</p>
 		</div>
 
@@ -22,6 +30,31 @@ import { useRouter } from 'vue-router';
 import type { Chat } from '../../interfaces/chat';
 import useChatList from '../../composables/chat/useChatList';
 import useOtherParticipant from '../../composables/chat/useOtherParticipant';
+
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime'
+import updateLocale from 'dayjs/plugin/updateLocale'
+
+dayjs.extend(relativeTime)
+dayjs.extend(updateLocale)
+
+dayjs.updateLocale('en', {
+	relativeTime: {
+		future: 'in %s',
+		past: '%s',
+		s: '1s',
+		m: '1m',
+		mm: '%dm',
+		h: '1h',
+		hh: '%dh',
+		d: '1d',
+		dd: '%dd',
+		M: '1mo',
+		MM: '%dmo',
+		y: '1y',
+		yy: '%dy',
+	}
+})
 
 defineProps<{
 	chats: Chat[],
