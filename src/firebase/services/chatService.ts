@@ -84,8 +84,6 @@ export const getUserChats = async (userId: string, userChats: Ref<Chat[]>): Prom
 				}
 			});
 			userChats.value = chats;
-			console.log('USER CHATOVI IZ CHAT SERVICEA');
-			console.log(userChats.value);
 		});
 		
  	} catch (error) {
@@ -124,7 +122,7 @@ export const setUserTyping = async (chatId: string, userId: string, typing: bool
 	}
 };
 
-export const setLastMessage = async (chatId: string, lastMessage: Message): Promise<void> => {
+export const setLastMessage = async (chatId: string, lastMessage: Message | null): Promise<void> => {
 	const db = getFirestore();
 	const chatRef = doc(db, 'chats', chatId);
 	try {
