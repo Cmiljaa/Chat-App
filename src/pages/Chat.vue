@@ -79,7 +79,7 @@ const { user }: { user: ComputedRef<User> } = useCurrentUser();
 
 const { chat, isLoading, chatMessages, isScrollEnabled, chatId } = useChatMessages(route);
 const { message, handleSendMessage, isDisabled } = useSendMessage(user.value.id, isScrollEnabled, chatId);
-const { isModalVisible, selectedMessage, openModal, closeModal, copyMessage, handleDeleteMessage } = useMessageActionsModal(isScrollEnabled.value);
+const { isModalVisible, selectedMessage, openModal, closeModal, copyMessage, handleDeleteMessage } = useMessageActionsModal(isScrollEnabled, chatMessages, chatId);
 const { isOtherMemberTyping, getOtherMemberNickname } = useOtherParticipant();
 useTypingStatus(message, chatId, user.value.id, isDisabled);
 const { resizeTextArea } = useChatTextArea();
