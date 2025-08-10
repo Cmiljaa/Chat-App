@@ -8,7 +8,7 @@ export default function useOtherParticipant(){
 		return otherParticipant?.isTyping;
 	}
 
-	const getOtherMemberNickname = (members: Record<string, MemberInfo> | null | undefined,excludeId: string): string => {
+	const getOtherMemberNickname = (members: Record<string, MemberInfo> | null | undefined, excludeId: string): string => {
 		if (!members || typeof excludeId !== 'string') return 'Unknown';
 
 		const otherMember = Object.values(members).find(member => member.id && member.id !== excludeId);
