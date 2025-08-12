@@ -1,5 +1,72 @@
-# Vue 3 + TypeScript + Vite
+# 1-on-1 Chat App
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+A real-time one-on-one chat application built with **Vue 3**, **TypeScript**, and **Vite**, powered by **Firebase** for authentication and database.  
+Features smooth real-time messaging, typing indicators, and a modern, responsive UI/UX.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## Features
+
+### Authentication
+- Email/password sign-up & sign-in with validation (using **Vuelidate**)
+- Google login/sign-up via Firebase Authentication
+- Sign-out functionality
+
+### User Search
+- Search users by nickname
+- Sidebar displaying chats with:
+  - Other user’s nickname
+  - Last message preview
+  - Relative time since last message (e.g., `4d`, `1m`, `1y`)
+
+### Chat
+- Real-time one-on-one messaging powered by **Firebase Firestore**
+- Typing indicators to see when the other user is typing
+- Auto-scroll to latest message (powered by **v-chat-scroll**)
+- Toast notifications using **vue-toast-notification**
+
+### Message Actions
+- View message creation date via the message options menu
+- Copy message text to clipboard
+- Delete own messages
+
+## Tech Stack
+
+- **Framework:** Vue 3 with `<script setup>` and TypeScript  
+- **Build Tool:** Vite  
+- **Styling:** Tailwind CSS  
+- **State Management:** Pinia  
+- **Authentication & Database:** Firebase Authentication & Firestore  
+- **Form Validation:** Vuelidate  
+- **Scrolling:** v-chat-scroll (auto-scroll)  
+- **Notifications:** vue-toast-notification  
+
+## Installation
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+```
+## Firebase Setup
+
+Create a file `src/firebase/FirebaseInit.ts` and copy the following content into it:
+
+```
+import { initializeApp } from "firebase/app";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+export { app };
+
+```
+## 
+© 2025 All Rights Reserved
