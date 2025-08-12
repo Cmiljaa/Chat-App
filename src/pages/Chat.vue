@@ -65,7 +65,7 @@ import { type ComputedRef } from 'vue';
 import useCurrentUser from '../composables/auth/useCurrentUser';
 import type { User } from '../interfaces/user';
 import { useRoute } from 'vue-router';
-import Spinner from '../components/ui/Spinner.vue';
+import Spinner from '../components/UI/Spinner.vue';
 import useChatMessages from '../composables/chat/useChatMessages';
 import MessageActionsModal from '../components/MessageActionsModal.vue';
 import useMessageActionsModal from '../composables/messages/useMessageActionsModal';

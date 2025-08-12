@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 
-import Spinner from '../components/ui/Spinner.vue';
+import Spinner from '../components/UI/Spinner.vue';
 import CreateChat from '../components/chat/CreateChat.vue';
 import ChatList from '../components/chat/ChatList.vue';
 import useChatActions from '../composables/chat/useChatActions';

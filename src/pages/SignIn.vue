@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { signInUser } from '../firebase/firebaseAuth';
-import BaseInput from '../components/ui/BaseInput.vue';
+import BaseInput from '../components/UI/BaseInput.vue';
 import AuthForm from '../components/auth/AuthForm.vue';
 import useAuthForm from '../composables/auth/useAuthForm';
 
