@@ -1,5 +1,5 @@
 <template>
-	<Modal :isOpen="isModalOpen" @update:isOpen="emit('update:isModalOpen', $event)">
+	<Modal :isOpen="isModalOpen" @update:is-open="emit('update:is-modal-open', $event)">
 		<div class="flex items-center gap-2 w-full max-w-sm">
 			<input type="text" placeholder="Search..." v-model="nickname"
 				class="flex-grow px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1" />
@@ -24,7 +24,7 @@ import { getUsersByNickname } from '../../firebase/services/userService';
 import useChatActions from '../../composables/chat/useChatActions';
 import type { User } from '../../interfaces/user';
 import type { Chat } from '../../interfaces/chat';
-import Modal from '../ui/Modal.vue';
+import Modal from '../UI/Modal.vue';
 import useCurrentUser from '../../composables/auth/useCurrentUser';
 import useChatList from '../../composables/chat/useChatList';
 
@@ -41,8 +41,8 @@ const { openChat } = useChatList();
 const { loadOrCreateChat } = useChatActions(user);
 
 const emit = defineEmits<{
-	(e: 'update:isModalOpen', value: boolean): void,
-	(e: 'chatCreated', value: Chat | string): void
+	(e: 'update:is-modal-open', value: boolean): void,
+	(e: 'chat-created', value: Chat | string): void
 }>();
 
 const getSearch = async (): Promise<void> => {
@@ -54,9 +54,9 @@ const handleChatAccess = async (userId1: string, userNickname1: string, userId2:
 
 	if (typeof result === 'string') {
 		handleOpenChat(result, userNickname2);
-		emit('chatCreated', result);
+		emit('chat-created', result);
 	} else {
-		emit('chatCreated', result);
+		emit('chat-created', result);
 	}
 
 	nickname.value = '';

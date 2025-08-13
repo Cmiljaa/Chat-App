@@ -34,7 +34,7 @@
 			</template>
 		</RouterView>
 
-		<CreateChat :user="user" v-model:isModalOpen="isModalOpen" @chatCreated="handleChatCreation" />
+		<CreateChat :user="user" v-model:isModalOpen="isModalOpen" @chat-created="handleChatCreation" />
 	</div>
 
 </template>
