@@ -1,6 +1,6 @@
 import { collection, deleteDoc, doc, getDoc, getFirestore, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, startAfter, where } from "firebase/firestore";
 import showToast from "../../ToastNotifications";
-import type { Message } from "../../interfaces/message";
+import type { Message } from "../../interfaces/Message";
 import { ref, type Ref } from "vue";
 
 let unsubscribeMessages: (() => void) | null = null;

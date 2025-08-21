@@ -1,9 +1,9 @@
 import { computed, onMounted, onUnmounted, ref, watch, type Ref } from "vue";
-import type { Message } from "../../interfaces/message";
+import type { Message } from "../../interfaces/Message";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
 import { getChatMessages, unsubscribeChatMessages } from "../../firebase/services/messageService";
 import { getChatById, unsubscribeChat } from "../../firebase/services/chatService";
-import { type Chat } from "../../interfaces/chat";
+import { type Chat } from "../../interfaces/Chat";
 import useChatTextArea from "./useChatTextArea";
 
 const { resizeTextArea } = useChatTextArea();

@@ -65,7 +65,7 @@
 <script setup lang="ts">
 import { ref, type ComputedRef, type Ref } from 'vue';
 import useCurrentUser from '../composables/auth/useCurrentUser';
-import type { User } from '../interfaces/user';
+import type { User } from '../interfaces/User';
 import { useRoute } from 'vue-router';
 import Spinner from '../components/UI/Spinner.vue';
 import useChatMessages from '../composables/chat/useChatMessages';

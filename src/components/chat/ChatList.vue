@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import type { Chat } from '../../interfaces/chat';
+import type { Chat } from '../../interfaces/Chat';
 import useChatList from '../../composables/chat/useChatList';
 import useOtherParticipant from '../../composables/chat/useOtherParticipant';
 import dayjs from '../utils/dayjs';

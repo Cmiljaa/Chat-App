@@ -3,7 +3,7 @@ import { createPinia } from 'pinia'
 import './style.css'
 import App from './App.vue'
 import router from './router'
-import './firebase/firebaseInit';
+import './firebase/FirebaseInit';
 import ToastPlugin from 'vue-toast-notification';
 
 import VueChatScroll from 'vue3-chat-scroll';

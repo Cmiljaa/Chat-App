@@ -1,6 +1,6 @@
 import { getFirestore, serverTimestamp, doc, setDoc, query, getDoc, collection, getDocs, orderBy, startAt, endAt } from "firebase/firestore";
 import showToast from "../../ToastNotifications";
-import type { User } from "../../interfaces/user";
+import type { User } from "../../interfaces/User";
 
 export const addUserToDb = async (nickname: string, email: string, id: string): Promise<void> => {
 	const db = getFirestore();

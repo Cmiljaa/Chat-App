@@ -25,9 +25,9 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs';
-import type { Message } from '../interfaces/message';
+import type { Message } from '../interfaces/Message';
 import type { ComputedRef } from 'vue';
-import type { User } from '../interfaces/user';
+import type { User } from '../interfaces/User';
 import useCurrentUser from '../composables/auth/useCurrentUser';
 
 const props = defineProps<{

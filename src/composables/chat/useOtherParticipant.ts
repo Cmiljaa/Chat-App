@@ -1,8 +1,8 @@
-import type { MemberInfo } from "../../interfaces/memberInfo";
+import type { MemberInfo } from "../../interfaces/MemberInfo";
 
 export default function useOtherParticipant(){
 
-	const isOtherMemberTyping = (members: Record<string, MemberInfo> | null, excludeId: string) => {
+	const isOtherMemberTyping = (members: Record<string, MemberInfo> | null, excludeId: string): boolean | undefined => {
 		if(!members) return false;
 		const otherParticipant = Object.values(members).find(member => member.id !== excludeId);
 		return otherParticipant?.isTyping;

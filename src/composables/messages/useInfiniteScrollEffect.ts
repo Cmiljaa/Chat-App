@@ -1,7 +1,7 @@
 import { nextTick, watch, type Ref } from "vue";
 import { useInfiniteScroll } from '@vueuse/core';
 import { getChatMessages } from "../../firebase/services/messageService";
-import type { Message } from "../../interfaces/message";
+import type { Message } from "../../interfaces/Message";
 
 export default function useInfiniteScrollEffect(chatId: Ref<string>, chatMessages: Ref<Message[]>, listEl: Ref<HTMLDivElement | null>, loadMore: Ref<boolean>, isScrollEnabled: Ref<boolean>){
 

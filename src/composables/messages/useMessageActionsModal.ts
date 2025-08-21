@@ -1,5 +1,5 @@
 import { ref, type Ref } from "vue";
-import type { Message } from "../../interfaces/message";
+import type { Message } from "../../interfaces/Message";
 import { deleteMessage } from "../../firebase/services/messageService";
 import { setLastMessage } from "../../firebase/services/chatService";
 

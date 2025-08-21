@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
-import type { Chat } from "../../interfaces/chat";
+import type { Chat } from "../../interfaces/Chat";
 import { collection, doc, getDocs, getFirestore, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
-import type { Message } from "../../interfaces/message";
+import type { Message } from "../../interfaces/Message";
 
 let unsubscribeFromChat: (() => void) | null = null;
 let unsubscribeFromUserChats: (() => void) | null = null;

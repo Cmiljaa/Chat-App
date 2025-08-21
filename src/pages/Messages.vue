@@ -47,7 +47,7 @@ import ChatList from '../components/chat/ChatList.vue';
 import useChatActions from '../composables/chat/useChatActions';
 import type { ComputedRef } from 'vue';
 import useCurrentUser from '../composables/auth/useCurrentUser';
-import type { User } from '../interfaces/user';
+import type { User } from '../interfaces/User';
 
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
 const { handleChatCreation, isModalOpen, isLoading, chats } = useChatActions(user);
