@@ -7,9 +7,11 @@
 					{{ getOtherMemberNickname(chat.members, user.id) }}
 				</span>
 			</div>
-			<div ref="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-2 flex flex-col"
+			<div class="flex-1 overflow-y-auto p-4 space-y-2 flex flex-col" ref="listEl"
 				v-chat-scroll="{ enabled: isScrollEnabled }">
-				<div v-for="chatMessage in chatMessages" :key="chatMessage.id" class="flex group"
+				<Spinner v-show="loadMore && chatMessages.length >= 50"
+					wrapperClass="flex flex-1 justify-center items-center" />
+				<div v-for="chatMessage in [...chatMessages].reverse()" :key="chatMessage.id" class="flex group"
 					:class="chatMessage.senderId === user.id ? 'justify-end' : 'justify-start'">
 					<template v-if="chatMessage.senderId === user.id">
 						<div class="relative flex items-center">
@@ -61,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ComputedRef } from 'vue';
+import { ref, type ComputedRef, type Ref } from 'vue';
 import useCurrentUser from '../composables/auth/useCurrentUser';
 import type { User } from '../interfaces/user';
 import { useRoute } from 'vue-router';
@@ -73,11 +75,15 @@ import useOtherParticipant from '../composables/chat/useOtherParticipant';
 import useSendMessage from '../composables/chat/useSendMessage';
 import useChatTextArea from '../composables/chat/useChatTextArea';
 import useTypingStatus from '../composables/chat/useTypingStatus';
+import useInfiniteScrollEffect from '../composables/messages/useInfiniteScrollEffect';
 
 const route = useRoute();
 const { user }: { user: ComputedRef<User> } = useCurrentUser();
+const listEl: Ref<HTMLDivElement | null> = ref(null);
+const loadMore = ref(false);
 
-const { chat, isLoading, chatMessages, isScrollEnabled, chatId } = useChatMessages(route);
+const { chat, isLoading, chatMessages, isScrollEnabled, chatId } = useChatMessages(route, loadMore);
+useInfiniteScrollEffect(chatId, chatMessages, listEl, loadMore, isScrollEnabled);
 const { message, handleSendMessage, isDisabled } = useSendMessage(user.value.id, isScrollEnabled, chatId);
 const { isModalVisible, selectedMessage, openModal, closeModal, copyMessage, handleDeleteMessage } = useMessageActionsModal(isScrollEnabled, chatMessages, chatId);
 const { isOtherMemberTyping, getOtherMemberNickname } = useOtherParticipant();

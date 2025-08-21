@@ -3,7 +3,7 @@ import { useInfiniteScroll } from '@vueuse/core';
 import { getChatMessages } from "../../firebase/services/messageService";
 import type { Message } from "../../interfaces/message";
 
-export default function useInfiniteScrollEffect(chatId: Ref<string>, chatMessages: Ref<Message[]>, listEl: Ref<HTMLDivElement | null>, loadMore: Ref<boolean>){
+export default function useInfiniteScrollEffect(chatId: Ref<string>, chatMessages: Ref<Message[]>, listEl: Ref<HTMLDivElement | null>, loadMore: Ref<boolean>, isScrollEnabled: Ref<boolean>){
 
 	watch(listEl, (el) => {
 		if (el && loadMore.value && listEl.value) {
@@ -11,7 +11,7 @@ export default function useInfiniteScrollEffect(chatId: Ref<string>, chatMessage
 			useInfiniteScroll(
 				el,
 				async () => {
-					
+					isScrollEnabled.value = false;
 					if (el.scrollHeight <= el.clientHeight || !listEl.value) return;
 
 					const prevHeight = listEl.value.scrollHeight;

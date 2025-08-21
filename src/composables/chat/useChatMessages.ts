@@ -8,7 +8,7 @@ import useChatTextArea from "./useChatTextArea";
 
 const { resizeTextArea } = useChatTextArea();
 
-export default function useChatMessages(route: RouteLocationNormalizedLoaded){
+export default function useChatMessages(route: RouteLocationNormalizedLoaded, loadMore: Ref<boolean> = ref(false)){
 
 	const chatId = computed(() => route.params.chatId as string);
 	const chatMessages: Ref<Message[]> = ref([]);
@@ -17,6 +17,8 @@ export default function useChatMessages(route: RouteLocationNormalizedLoaded){
 	const chat = ref<Chat | null>(null);
 
 	const fetchChatMessages = async (): Promise<void> => {
+		isScrollEnabled.value = true;
+		loadMore.value = true;
 		isLoading.value = true;
 		chatMessages.value = [];
 		await getChatMessages(chatId.value, chatMessages);
@@ -29,10 +31,6 @@ export default function useChatMessages(route: RouteLocationNormalizedLoaded){
 			await fetchChatMessages();
 		}
 	});
-
-	watch(chatMessages, (): void => {
-		isScrollEnabled.value = true;
-	},{ deep: true });
 
 	onMounted(async (): Promise<void> => {
 		await fetchChatMessages();
