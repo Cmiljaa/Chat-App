@@ -39,7 +39,7 @@ const waitForAuth = () => {
 
 
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _from, next) => {
 	const firebaseUser: any = await waitForAuth();
 	const userStore = useUserStore();
 
